@@ -3,15 +3,24 @@
 # No Encryption.
 # ===================================
 
+import socket
+MEMORY_IP='0.0.0.0'
+MEMORY_PORT=9077
+MEMORY_SOCKET=socket.socket()
 
 def Decrypt(data):
-    '''Will be implimented. At some point...
-    '''
     return data
 
+def Make_Folder(name):
+    try:
+        MEMORY_SOCKET.send("Make;"+name)
+        response=MEMORY_SOCKET.recv(1024)
+        return response
+    except:
+        return "Unknown error"
+
 def Start_Run():
-    '''A method that runs when you first run the server.
-    '''
+    MEMORY_SOCKET.connect((MEMORY_IP, MEMORY_PORT))
     database_file=open('database.txt', 'r')
     encrypted_database_content = database_file.read()
     database_content=Decrypt(encrypted_database_content)
@@ -25,25 +34,39 @@ def Start_Run():
     database_file.close()
 
 def Name_Exists(name):
-    '''This method returns True if the name is already occupied, and false Otherwise
-    '''
-    return name in dict_database.keys()
+    try:
+        if name in dict_database.keys():
+            return "Success"
+        else:
+            return "Unknown name"
+    except:
+        return "Unknown error"
 
 def Register_New_User(username, password):
-    '''Registers a new user... Duh.
-    '''
-    if Name_Exists(username):
-        return 'Name_Exists'
-    else:
-        dict_database[username]=password
-        database=open('database.txt', 'a')
-        print >>database, '{n}:{p}'.format(n=username, p=password)
-        database.close()
+    try:
+        if Name_Exists(username):
+            return 'Name in use'
+        else:
+            dict_database[username]=password
+            database=open('database.txt', 'a')
+            print >>database, '{n}:{p}'.format(n=username, p=password)
+            database.close()
+            return Make_Folder(name)
+    except:
+        return "Unknown error"
 
 def Authenticate(name, password):
-    '''Returns True if the name and password matches, and False otherwise
-    '''
-    return Name_Exists(name) and dict_database[name]==password
+    try:
+        if Name_Exists(name):
+            if dict_database[name]==password:
+                return "Success"
+            else:
+                return "Authentication Failed"
+        else:
+            return "Unknown name"
+    except:
+        return "Unknown error"
+
 
 try:
     dict_database[0]
