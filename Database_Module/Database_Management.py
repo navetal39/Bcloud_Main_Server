@@ -48,7 +48,7 @@ def Authenticate(name, password):
 try:
     dict_database[0]
 except:
-    Start_run()
+    Start_Run()
 
 '''
 Exciting. Satisfying. Period.
