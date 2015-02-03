@@ -25,13 +25,13 @@ def Respond_To_Clients(to_do_list, write_list):
             elif flag=="EXI":
                 status=Name_Exists(info[0])
                     
-            open_socket.send(status+';'data)
+            open_socket.send(status+';'+data)
             print "Sent data to client"
         else:
             updated_ml.append(pair)
-    retrn new_to_do_list
+    return new_to_do_list
 
-def Main():
+#def Main():
     to_do_list=[]
     server_socket=socket.socket()
     server_socket.bind(('0.0.0.0', 6853))
