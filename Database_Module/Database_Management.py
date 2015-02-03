@@ -4,17 +4,17 @@
 # ===================================
 
 
-def decrypt(data):
+def Decrypt(data):
     '''Will be implimented. At some point...
     '''
     return data
 
-def start_run():
+def Start_Run():
     '''A method that runs when you first run the server.
     '''
     database_file=open('database.txt', 'r')
     encrypted_database_content = database_file.read()
-    database_content=decrypt(encrypted_database_content)
+    database_content=Decrypt(encrypted_database_content)
     database_lines=database_content.split('\n')
     global dict_database
     dict_database={}
@@ -24,15 +24,15 @@ def start_run():
             dict_database[name]=password
     database_file.close()
 
-def name_exists(name):
+def Name_Exists(name):
     '''This method returns True if the name is already occupied, and false Otherwise
     '''
     return name in dict_database.keys()
 
-def register_new_user(username, password):
+def Register_New_User(username, password):
     '''Registers a new user... Duh.
     '''
-    if name_exists(username):
+    if Name_Exists(username):
         return 'Name_Exists'
     else:
         dict_database[username]=password
@@ -40,15 +40,15 @@ def register_new_user(username, password):
         print >>database, '{n}:{p}'.format(n=username, p=password)
         database.close()
 
-def authenticate(name, password):
+def Authenticate(name, password):
     '''Returns True if the name and password matches, and False otherwise
     '''
-    return name_exists(name) and dict_database[name]==password
+    return Name_Exists(name) and dict_database[name]==password
 
 try:
     dict_database[0]
 except:
-    start_run()
+    Start_run()
 
 '''
 Exciting. Satisfying. Period.
