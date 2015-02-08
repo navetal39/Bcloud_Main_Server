@@ -7,24 +7,24 @@ import socket
 import select
 
 open_sockets = []
-
+database=DataBase()
 def respond_to_clients(to_do_list, write_list):
     new_to_do_list = []
     for pair in to_do_list:
         target, data = pair
         if target in write_list:
             info = data.split(';')
-            flag = info[0] # flag is the commend
+            flag = parts[0] # flag=command
             info.remove(flag)
             
             if flag == "REG":
-                status = DataBase.register_new_user(info[0], info[1])
+                status = database.register_new_user(info[0], info[1])
                 
             elif flag == "AUT":
-                status = DataBase.authenticate(info[0], info[1])
+                status = database.authenticate(info[0], info[1])
                 
             elif flag == "EXI":
-                status = DataBase.name_exists(info[0])
+                status = database.name_exists(info[0])
                     
             open_socket.send(status+';'+data)
             print "Sent data to client" # -For The Record-
@@ -32,7 +32,7 @@ def respond_to_clients(to_do_list, write_list):
             new_to_do_list.append(pair)
     return new_to_do_list
 
-#def Main():    ##
+'''def Main():
     to_do_list = []
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0', 6853))
@@ -55,7 +55,7 @@ def respond_to_clients(to_do_list, write_list):
 
         to_do_list = Respond_To_Clients(to_do_list, write_list)
 
-
+'''
 
 
 '''

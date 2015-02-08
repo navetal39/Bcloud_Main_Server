@@ -6,18 +6,18 @@
 import socket
 
 class DataBase(object):
-    def __init__():
+    def __init__(self):
         ''' This method will run every time you boot up the module.
         '''
-        MEMORY_IP = '0.0.0.0'
-        MEMORY_PORT = 9077
-        self.MEMORY_SOCKET = socket.socket()
-        self.MEMORY_SOCKET.connect((MEMORY_IP, MEMORY_PORT))
-        self.dict_database = dict(self)
+        #MEMORY_IP = '0.0.0.0'
+        #MEMORY_PORT = 9077
+        #self.MEMORY_SOCKET = socket.socket()
+        #self.MEMORY_SOCKET.connect((MEMORY_IP, MEMORY_PORT))
+        self.dict_database = dict()
         
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
-        database_content = decrypt(encrypted_database_content)
+        database_content = self.decrypt(encrypted_database_content)
         database_lines = database_content.split('\n')
         for line in database_lines:
             if line != "":
@@ -25,6 +25,17 @@ class DataBase(object):
                 self.dict_database[name] = password
         database_file.close()
 
+    def __str__(self):
+        info=''
+        for key in self.dict_database.keys():
+            info+="{name}: {pw}; ".format(name=key, pw=self.dict_database[key])
+        return info
+    
+    def __repr__(self):
+        info=''
+        for key in self.dict_database.keys():
+            info+="{name}: {pw}\n".format(name=key, pw=self.dict_database[key])
+        return info
 
     def decrypt(self, data):
         ''' Decrypts the data it gets. Unimplimented.
@@ -63,7 +74,7 @@ class DataBase(object):
                 database = open('database.txt', 'a')
                 print >>database, '{n}:{p}'.format(n=username, p=password)
                 database.close()
-                return make_folder(name)
+                #return make_folder(name)
             else:
                 raise
         except:
