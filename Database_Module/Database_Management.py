@@ -17,9 +17,9 @@ class DataBase(object):
         
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
-        database_content = self.decrypt(encrypted_database_content)
-        database_lines = database_content.split('\n')
-        for line in database_lines:
+        encrypted_lines=encrypted_database_content.split('\n')
+        for encrypted_line in encrypted_lines:
+            line=self.decrypt(encrypted_line)
             if line != "":
                 name, password = line.split(':')
                 self.dict_database[name] = password
@@ -77,8 +77,8 @@ class DataBase(object):
             elif self.name_exists(username) == "Unknown name":
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
-                encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password')
-                print >>database, encrypted_data
+                encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password)
+                print >>database, encrypted_data+'\n'
                 database.close()
                 #return make_folder(name)
             else:
