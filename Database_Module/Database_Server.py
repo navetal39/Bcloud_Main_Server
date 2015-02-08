@@ -1,5 +1,5 @@
 # INFO: #
-# First version.
+# Isolated testing version - No connection to memory module. 
 # ===================================
 
 from Database_Management import DataBase
@@ -32,7 +32,7 @@ def respond_to_clients(to_do_list, write_list):
             new_to_do_list.append(pair)
     return new_to_do_list
 
-'''def Main():
+def Main():
     to_do_list = []
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0', 6853))
@@ -54,9 +54,6 @@ def respond_to_clients(to_do_list, write_list):
                     to_do_list.append((open_socket, data))
 
         to_do_list = Respond_To_Clients(to_do_list, write_list)
-
-'''
-
 
 '''
 Exciting. Satisfying. Period.
