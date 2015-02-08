@@ -1,5 +1,5 @@
 # INFO: #
-# First version.
+# Isolated testing version - No connection to memory module. 
 # No Encryption.
 # ===================================
 
@@ -42,6 +42,11 @@ class DataBase(object):
         '''
         return data
 
+     def encrypt(self, data):
+        ''' Encrypts the data it gets. Unimplimented.
+        '''
+        return data
+
     def make_folder(self, name):
         ''' This method is dedicated to communicating with the Storage module for setting up new directories.
         '''
@@ -72,7 +77,8 @@ class DataBase(object):
             elif self.name_exists(username) == "Unknown name":
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
-                print >>database, '{n}:{p}'.format(n=username, p=password)
+                encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password')
+                print >>database, encrypted_data
                 database.close()
                 #return make_folder(name)
             else:
