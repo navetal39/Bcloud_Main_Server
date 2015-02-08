@@ -4,3 +4,4 @@ tamir:harrypotter
 mosko:glueten
 heller:black
 luzinski:ginger
+chucknorris:404passwordnotfound

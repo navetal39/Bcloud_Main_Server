@@ -10,11 +10,10 @@ class DataBase(object):
         ''' This method will run every time you boot up the module.
         '''
         #MEMORY_IP = '0.0.0.0'
-        #MEMORY_PORT = 9077
+        #MEMORY_PORT = 3330
         #self.MEMORY_SOCKET = socket.socket()
         #self.MEMORY_SOCKET.connect((MEMORY_IP, MEMORY_PORT))
-        self.dict_database = dict()
-        
+        self.dict_database = {}
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
         encrypted_lines=encrypted_database_content.split('\n')
