@@ -37,7 +37,7 @@ def make_folder(name):
     '''
     try:
         MEMORY_SOCKET.send("Make;" + name)
-        response = MEMORY_SOCKET.recv(1024) # deal with recieving a full response... thing with leangth, if needed.
+        response = MEMORY_SOCKET.recv(1024)
         return response
     except:
         return "Unknown error"
@@ -61,8 +61,8 @@ def register_new_user(username, password):
             return 'Name in use'
         else:
             dict_database[username] = password
-            database = open('database.txt', 'a') #
-            print >>database, '{n}:{p}'.format(n=username, p=password) #
+            database = open('database.txt', 'a')
+            print >>database, '{n}:{p}'.format(n=username, p=password)
             database.close()
             return make_folder(name)
     except:
