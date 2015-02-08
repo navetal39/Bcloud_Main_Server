@@ -2,7 +2,7 @@
 # First version.
 # ===================================
 
-from Database_Management import *
+from Database_Management import DataBase
 import socket
 import select
 
@@ -18,13 +18,13 @@ def respond_to_clients(to_do_list, write_list):
             info.remove(flag)
             
             if flag == "REG":
-                status = register_new_user(info[0], info[1])
+                status = DataBase.register_new_user(info[0], info[1])
                 
             elif flag == "AUT":
-                status = authenticate(info[0], info[1])
+                status = DataBase.authenticate(info[0], info[1])
                 
             elif flag == "EXI":
-                status = name_exists(info[0])
+                status = DataBase.name_exists(info[0])
                     
             open_socket.send(status+';'+data)
             print "Sent data to client" # -For The Record-
