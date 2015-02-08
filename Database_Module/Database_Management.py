@@ -36,7 +36,7 @@ class DataBase(object):
         '''
         try:
             self.MEMORY_SOCKET.send("Make;" + name)
-            response = MEMORY_SOCKET.recv(1024) # deal with recieving a full response... thing with leangth, if needed.
+            response = self.MEMORY_SOCKET.recv(1024) # deal with recieving a full response... thing with leangth, if needed.
             return response
         except:
             return "Unknown error"
@@ -56,9 +56,9 @@ class DataBase(object):
         ''' A method for registering new users.
         '''
         try:
-            if name_exists(username) == "Success":
+            if self.name_exists(username) == "Success":
                 return 'Name in use'
-            elif name_exists(username) == "Unknown name":
+            elif self.name_exists(username) == "Unknown name":
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
                 print >>database, '{n}:{p}'.format(n=username, p=password)
@@ -73,7 +73,7 @@ class DataBase(object):
         ''' Verifies that a given name and a given password matches in the database
         '''
         try:
-            if name_exists(name):
+            if self.name_exists(name):
                 if self.dict_database[name] == password:
                     return "Success"
                 else:
