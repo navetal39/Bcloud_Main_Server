@@ -60,8 +60,8 @@ class DataBase(object):
                 return 'Name in use'
             elif name_exists(username) == "Unknown name":
                 self.dict_database[username] = password
-                database = open('database.txt', 'a') #
-                print >>database, '{n}:{p}'.format(n=username, p=password) #
+                database = open('database.txt', 'a')
+                print >>database, '{n}:{p}'.format(n=username, p=password)
                 database.close()
                 return make_folder(name)
             else:

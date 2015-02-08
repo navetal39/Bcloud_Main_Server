@@ -14,7 +14,7 @@ def respond_to_clients(to_do_list, write_list):
         target, data = pair
         if target in write_list:
             info = data.split(';')
-            flag = parts[0] #
+            flag = info[0] # flag is the commend
             info.remove(flag)
             
             if flag == "REG":
