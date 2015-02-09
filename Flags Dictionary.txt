@@ -4,7 +4,7 @@ Request flags:
 	Memory module functions:
 	* MNF = Make New Folder, make a new folder(s) for a given user.
 	* LUD = Last Update, return the last time a given folder was updated.
-	* GET = Get, get a specific folder.
+	* GET = Get, get a specific folder. # What about geting a specific file?
 	Database functions:
 	* REG = Register, register new user.
 	* AUT = Authenticate, make sure that a given name and a given password match in the database.
@@ -15,8 +15,8 @@ Response flags:
 	* SCS = Success, operation was successful.
 	* WTF = What The F*ck?!, an unknown error happened.
 	Flags that you may get from the database module:
-	* NNM = No Name, the name that was given doesn't exist in the database.
+	* NNM = No Name, the name that was given doesn't exist in the database. #I say, change it to NSN for No Such Name.
 	* NIU = Name In Use, the name that was given is already in use.
-	* NPW = No Password, the name that was given doesn't match the name that was given.
+	* NPW = No Password, the name that was given doesn't match the name that was given. # This description is not clear, nor understandable
 	Flags that you may get from the memory module:
 	- No flags yet, this is just a placeholder. -
