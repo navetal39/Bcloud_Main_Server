@@ -5,7 +5,7 @@
 from Database_Management import DataBase
 import socket
 import select
-MEMORY_IP='0.0.0.0'
+MEMORY_IP='127.0.0.1'
 MEMORY_PORT='3330'
 
 
