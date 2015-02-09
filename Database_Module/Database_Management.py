@@ -6,12 +6,12 @@
 import socket
 
 class DataBase(object):
-    def __init__(self):
+    def __init__(self, ip, port):
         ''' This method will run every time you boot up the module.
         '''
-        #MEMORY_IP = '0.0.0.0'
-        #MEMORY_PORT = 3330
-        #self.MEMORY_SOCKET = socket.socket()
+        MEMORY_IP = ip
+        MEMORY_PORT = port
+        self.MEMORY_SOCKET = socket.socket()
         #self.MEMORY_SOCKET.connect((MEMORY_IP, MEMORY_PORT))
         self.dict_database = {}
         database_file = open('database.txt', 'r')
@@ -50,8 +50,9 @@ class DataBase(object):
         ''' This method is dedicated to communicating with the Storage module for setting up new directories.
         '''
         try:
-            self.MEMORY_SOCKET.send("Make;" + name)
-            response = self.MEMORY_SOCKET.recv(1024) # deal with recieving a full response... thing with leangth, if needed.
+            response="Success" # Change this block once the memory module is set up.
+            # self.MEMORY_SOCKET.send("Make;" + name)
+            # response = self.MEMORY_SOCKET.recv(1024) # deal with recieving a full response... thing with leangth, if needed.
             return response
         except:
             return "Unknown error"
@@ -79,7 +80,7 @@ class DataBase(object):
                 encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password)
                 print >>database, encrypted_data+'\n'
                 database.close()
-                #return make_folder(name)
+                return make_folder(name)
             else:
                 raise
         except:

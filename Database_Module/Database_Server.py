@@ -5,9 +5,13 @@
 from Database_Management import DataBase
 import socket
 import select
+MEMORY_IP='0.0.0.0'
+MEMORY_PORT='3330'
+
 
 open_sockets = []
-database=DataBase()
+database=DataBase(MEMORY_IP, MEMORY_PORT)
+
 def respond_to_clients(to_do_list, write_list):
     new_to_do_list = []
     for pair in to_do_list:
