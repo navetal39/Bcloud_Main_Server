@@ -41,7 +41,7 @@ class DataBase(object):
         '''
         return data
 
-     def encrypt(self, data):
+    def encrypt(self, data):
         ''' Encrypts the data it gets. Unimplimented.
         '''
         return data
@@ -77,7 +77,7 @@ class DataBase(object):
             elif self.name_exists(username) == "NNM":
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
-                encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password)
+                encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password))
                 print >>database, encrypted_data+'\n'
                 database.close()
                 return make_folder(name)

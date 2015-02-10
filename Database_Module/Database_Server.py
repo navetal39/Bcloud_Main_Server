@@ -30,7 +30,7 @@ def respond_to_clients(to_do_list, write_list):
             elif flag == "EXI":
                 status = database.name_exists(info[0])
                     
-            open_socket.send(status+';'+data)
+            target.send(status+';'+data)
             print "Sent data to client" # -For The Record-
         else:
             new_to_do_list.append(pair)
