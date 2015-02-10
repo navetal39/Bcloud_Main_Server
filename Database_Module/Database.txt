@@ -5,3 +5,8 @@ mosko:glueten
 heller:black
 luzinski:ginger
 chucknorris:404passwordnotfound
+osishkin:lifa
+yuval:talmor
+lange:lenga
+kliner:bla_bla_bla
+roma:technologyiscoolyo

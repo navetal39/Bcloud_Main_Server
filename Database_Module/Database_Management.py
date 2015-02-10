@@ -78,9 +78,9 @@ class DataBase(object):
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
                 encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password))
-                print >>database, encrypted_data+'\n'
+                print >>database, encrypted_data
                 database.close()
-                return make_folder(name)
+                return self.make_folder(username)
             else:
                 raise
         except:
