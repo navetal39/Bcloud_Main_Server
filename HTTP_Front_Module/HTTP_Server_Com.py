@@ -41,7 +41,7 @@ def secure_recv(sock, size = '5000'):
 def file_recv(sock):
     ''' This method is for reciving large files.
     '''
-    response=secure_recv(sock, count = 0)
+    response=secure_recv(sock)
     flag, str_size = response.split(';')
     try:
         if flag != 'SIZ':
