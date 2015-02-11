@@ -1,10 +1,10 @@
 # INFO: #
 # First version.
+# Not tested.
 # ===================================
 
 '''
 TO DO:
-1) Make secure_recv compatible with large files
 '''
 
 import socket, Queue
@@ -33,16 +33,49 @@ def secure_accept(server_socket):
     cs,ca = server_socket.accept()
     return (cs, ca)
 
-def secure_recv(sock):
+def secure_recv(sock, size = '5000'):
     ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
     '''
-    return sock.recv(5000) #Need to do the thing with the length...
+    return sock.recv(size)
 
+def file_recv(sock):
+    ''' This method is for reciving large files.
+    '''
+    response=secure_recv(sock, count = 0)
+    flag, str_size = response.split(';')
+    try:
+        if flag != 'SIZ':
+            raise
+        size = int(str_size)
+    except:
+        if count < 3: #Just making sure that it won't attemt endlessly
+            seure_send(sock, 'NAK')
+            final_response = file_recv(sock, count+1)
+        else:
+            final_response = 'WTF'
+        return final_response
+    seure_send(sock, 'ACK')
+    final_response = secure_recv(sock, size)
+    return final_response
 def secure_send(sock, mess):
     ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).
     '''
     print "sending {m}".format(m=mess) # -For The Record-
     sock.send(mess)
+
+def file_send(sock, mess):
+    ''' This method is for sending large files.
+    '''
+    size=len(mess)
+    secure_send(sock, 'SIZ;{}'.format(size))
+    response=secure_recv(sock)
+    if response == 'NAK':
+        file_send(sock, mess)
+        return
+    elif response == 'ACK':
+        secure_send(sock, mess)
+    else: #Just so there'll be an else...
+        pass
 
 def secure_close(sock):
     ''' This method needs to...
@@ -82,7 +115,7 @@ def do_work():
                 forward_socket.connect((target_ip, target_port))
                 secure_Send(forward_socket, req)
                 module_response=secure_recv(forward_socket)
-                forward_socket.close()
+                secure_close(forward_socket)
                 if get: # It was a get request, thus it requires a second operation - obtaining the folder
                     parsed_module_response=module_response.splot(';')
                     flag = parsed_module_response[0]
@@ -90,13 +123,15 @@ def do_work():
                         req='GET;{}'.format(data[1]) # Return the request to it's original form
                         forward_socket.connect((MEMORY_IP, MEMORY_PORT))
                         secure_send(forward_socket, req)
-                        module_response = secure_recv(forward_socket)
-                        forward_socket.close()
+                        module_response = file_recv(forward_socket)
+                        secure_close(forward_socket)
                     elif flag == 'NNM':
                         module_response = 'NNM'
                     else:
                         module_response = 'WTF'
-                secure_send(client_socket, module_response)
+                    file_send(client_socket, module_response)
+                else:
+                    secure_send(client_socket, module_response)
             
 
 def make_threads_and_queue(num, size):

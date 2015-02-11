@@ -13,10 +13,12 @@ Request flags:
 Response flags:
 	General flags:
 	* SCS = Success, operation was successful.
+	* ACK = Acknowledged. It means that the previous message was recived and you may continue.
+	* NAK= Not Acknowledged. It means that the previous message wasen't recived correctly.
 	* WTF = What The F*ck?!, an unknown error happened.
 	Flags that you may get from the database module:
 	* NNM = No Name, the name that was given doesn't exist in the database.
 	* NIU = Name In Use, the name that was given is already in use.
 	* NPW = No Password, the name that was given doesn't match the password that was given.
 	Flags that you may get from the memory module:
-	- No flags yet, this is just a placeholder. -
+	* SIZ = Size. The following data isn't the actual data but it's size. Used for file transfer.
