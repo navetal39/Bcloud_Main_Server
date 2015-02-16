@@ -1,16 +1,19 @@
-# INFO: #
-# Isolated testing version - No connection to memory module. 
+# Info: #
+# Pre-first version
 # ===================================
 
-from Database_Management import DataBase
-import socket
-import select
-MEMORY_IP='127.0.0.1'
-MEMORY_PORT='3330'
+'''
+To do:
+1) Add the part that adds new folders.
+2) Add the part that makes new User objects.
+'''
+from classes import User
 
+clients_dict = {}
 
-open_sockets = []
-database=DataBase(MEMORY_IP, MEMORY_PORT)
+def new_client(name):
+    u = User(name)
+    clients_dict[name] = u
 
 def respond_to_clients(to_do_list, write_list):
     new_to_do_list = []
@@ -20,26 +23,33 @@ def respond_to_clients(to_do_list, write_list):
             info = data.split(';')
             flag = info[0] # flag=command
             info.remove(flag)
-            
-            if flag == "REG":
-                status = database.register_new_user(info[0], info[1])
+            name=parts[0]
+            info.remove(name)
+            user=clients_dict[name]
+            if flag == "MNF":
+                # Set up folders and stuff for the username
+                pass
                 
-            elif flag == "AUT":
-                status = database.authenticate(info[0], info[1])
+            elif flag == "LUD":
+                status, new_data = user.get_folder_info(info[0])
                 
-            elif flag == "EXI":
-                status = database.name_exists(info[0])
-                    
-            target.send(status+';'+data)
+            elif flag == "GET":
+                status, new_data = user.get_folder(info[0])
+
+            elif flag == "FIL":
+                status, new_data = user.get_file(info[0], info[1])
+                
+            target.send(status+';'+new_data)
             print "Sent data to client" # -For The Record-
         else:
             new_to_do_list.append(pair)
     return new_to_do_list
 
+
 def Main():
     to_do_list = []
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0', 6853))
+    server_socket.bind(('0.0.0.0', 3330))
     server_socket.listen(6)
 
     while True:
@@ -58,6 +68,7 @@ def Main():
                     to_do_list.append((open_socket, data))
 
         to_do_list = Respond_To_Clients(to_do_list, write_list)
+
 
 '''
 Exciting. Satisfying. Period.
