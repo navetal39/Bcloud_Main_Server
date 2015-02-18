@@ -36,7 +36,7 @@ def respond_to_clients(to_do_list, write_list):
             new_to_do_list.append(pair)
     return new_to_do_list
 
-def Main():
+def main():
     to_do_list = []
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0', 6853))
@@ -58,6 +58,8 @@ def Main():
                     to_do_list.append((open_socket, data))
 
         to_do_list = Respond_To_Clients(to_do_list, write_list)
+
+main()
 
 '''
 Exciting. Satisfying. Period.
