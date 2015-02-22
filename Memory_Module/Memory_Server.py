@@ -7,10 +7,29 @@ To do:
 1) Add the part that adds new folders.
 2) Add the part that makes new User objects.
 '''
-from classes import User
+from classes import User, ROOT
+import zipfile, os, sys
 
 clients_dict = {}
 
+def new_user(name):
+    try:
+        dirpath='{r}/{n}'.format(r = ROOT, n = name)
+        os.makedirs(dirpath)
+        os.makedirs(dirpath+'/private')
+        os.makedirs(dirpath+'/public')
+        pri = open (dirpath+'/private.txt', 'w')
+        pub = open (dirpath+'/public.txt', 'w')
+        sfz = zipfile.ZipFile(dirpath+'/single.zip', 'w')
+        mfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w')
+        pri.close()
+        pub.close()
+        sfz.close()
+        mfz.close()
+        return 'SCS'
+    except:
+        return 'WTF'
+        
 def new_client(name):
     u = User(name)
     clients_dict[name] = u
@@ -27,9 +46,8 @@ def respond_to_clients(to_do_list, write_list):
             info.remove(name)
             user=clients_dict[name]
             if flag == "MNF":
-                # Set up folders and stuff for the username
-                pass
-                
+                status = new_user(name)
+                new_data = 'MNFREQNEWDATAPLACEHOLDERABCDEFGHIJKLMNOPQRSTUVWXYZBCLOUDISCOOL'
             elif flag == "LUD":
                 status, new_data = user.get_folder_info(info[0])
                 
@@ -38,8 +56,11 @@ def respond_to_clients(to_do_list, write_list):
 
             elif flag == "FIL":
                 status, new_data = user.get_file(info[0], info[1])
-                
-            target.send(status+';'+new_data)
+
+            if newdata != 'MNFREQNEWDATAPLACEHOLDERABCDEFGHIJKLMNOPQRSTUVWXYZBCLOUDISCOOL'
+                target.send(status+';'+new_data)
+            else:
+                target.send(status)
             print "Sent data to client" # -For The Record-
         else:
             new_to_do_list.append(pair)

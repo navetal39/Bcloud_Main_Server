@@ -50,9 +50,8 @@ class DataBase(object):
         ''' This method is dedicated to communicating with the Storage module for setting up new directories.
         '''
         try:
-            response="SCS" # Change this block once the memory module is set up.
-            # self.MEMORY_SOCKET.send("MNF;" + name)
-            # response = self.MEMORY_SOCKET.recv(1024) # deal with recieving a full response... thing with leangth, if needed.
+            self.MEMORY_SOCKET.send("MNF;" + name)
+            response = self.MEMORY_SOCKET.recv(1024)
             return response
         except:
             return "WTF"

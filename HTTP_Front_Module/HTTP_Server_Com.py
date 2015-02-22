@@ -25,23 +25,11 @@ DATABASE_IP = '127.0.0.1'
 DATABASE_PORT = '6853'
 
 # Methods: #
-## SSL/TLS Methods: ##
-def secure_accept(server_socket):
-    ''' This method needs to accept a new client and establish a secure TCP connection with him (over SSL/TLS).
-        It will return exacly what the normal accept method returns UNLESS we will need to change it.
-    '''
-    cs,ca = server_socket.accept()
-    return (cs, ca)
-
-def secure_recv(sock, size = 5000):
-    ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
-    '''
-    return sock.recv(size)
-
+## File Transfering: ##
 def file_recv(sock):
     ''' This method is for reciving large files.
     '''
-    response=secure_recv(sock)
+    response=sock.recv(5000)
     flag, str_size = response.split(';')
     try:
         if flag != 'SIZ':
@@ -55,40 +43,33 @@ def file_recv(sock):
             final_response = 'WTF'
         return final_response
     seure_send(sock, 'ACK')
-    final_response = secure_recv(sock, size)
+    final_response = sock.recv(size)
     return final_response
-def secure_send(sock, mess):
-    ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).
-    '''
-    print "sending {m}".format(m=mess) # -For The Record-
-    sock.send(mess)
 
 def file_send(sock, mess):
     ''' This method is for sending large files.
     '''
     size=len(mess)
-    secure_send(sock, 'SIZ;{}'.format(size))
-    response=secure_recv(sock)
+    sock.send('SIZ;{}'.format(size))
+    response=sock.recv(5000)
     if response == 'NAK':
         file_send(sock, mess)
         return
     elif response == 'ACK':
-        secure_send(sock, mess)
+        sock.send(mess)
     else: #Just so there'll be an else...
         pass
 
-def secure_close(sock):
-    ''' This method needs to...
-    '''
-    sock.close()
+
+
     
 ## General Methods: ##
 def do_work():
     client_socket, client_addr = q.get()
     while True:
-        req = secure_recv(client_socket)
+        req = client_socket.recv(5000)
         if req == "":
-            secure_close(client_socket)
+            client_socket.close()
             print "Closed connection" # -For The Record-
             q.task_done()
         else:
@@ -109,29 +90,29 @@ def do_work():
                 else: # An unknown request
                     raise
             except: # An unknown request
-                secure_send(client_socket, 'WTF')
+                client_socket.send('WTF')
             else: # A known request
                 forward_socket=socket.socket()
                 forward_socket.connect((target_ip, target_port))
-                secure_Send(forward_socket, req)
-                module_response=secure_recv(forward_socket)
-                secure_close(forward_socket)
+                forward_socket.send(req)
+                module_response=forward_socket.recv(5000)
+                forward_socket.close()
                 if get: # It was a get request, thus it requires a second operation - obtaining the folder
                     parsed_module_response=module_response.splot(';')
                     flag = parsed_module_response[0]
                     if flag == 'SCS': # Only if the name exists this flag should appear, and only then we should attemt to get the folder
                         req='GET;{}'.format(data[1]) # Return the request to it's original form
                         forward_socket.connect((MEMORY_IP, MEMORY_PORT))
-                        secure_send(forward_socket, req)
+                        forward_socket.send(req)
                         module_response = file_recv(forward_socket)
-                        secure_close(forward_socket)
+                        forward_socket.close()
                     elif flag == 'NNM':
                         module_response = 'NNM'
                     else:
                         module_response = 'WTF'
                     file_send(client_socket, module_response)
                 else:
-                    secure_send(client_socket, module_response)
+                    client_socket.send(module_response)
             
 
 def make_threads_and_queue(num, size):
@@ -151,7 +132,7 @@ def main():
     print "Running... on port {}".format(port) # -For The Record-
 
     while True:
-        client_socket, client_addr = secure_accept(server_socket)
+        client_socket, client_addr = server_socket.accept()
         print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
 
