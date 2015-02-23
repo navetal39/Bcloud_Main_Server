@@ -56,7 +56,7 @@ def respond_to_clients(to_do_list, write_list):
                 new_data = "NONEWDATA"
             elif flag == "GET":
                 status, new_data = user.get_folder(info[0])
-            elif flag == "SET":
+            elif flag == "WRT":
                 status = user.write_to_file(info[0], info[1], info[2])
                 new_data = "NONEWDATA"
             elif flag == "FIL":

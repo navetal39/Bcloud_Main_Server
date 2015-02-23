@@ -9,7 +9,7 @@ ROOT = "C:/Bcloud"
 
 '''
 To do:
-EVERYTHING!
+1) Make 'Get Folder' ignore system files, etc.
 '''
 
 class User(object):
@@ -41,8 +41,7 @@ class User(object):
     def get_file(self, folder_type, file_name):
         try:
             archive = zipfile.ZipFile(self.path+'/single.zip', 'w')
-            f = open(self.path+'/{folder}/{fil}'.format(folder=folder_type, fil=file_name), 'r')
-            archive.write(f, file_name) # PROBLEMATIC LINE. FIX IT WHEN YOU CAN, WHOEVER READS THIS!
+            archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
             archive.close()
             archive = open(self.path+'/single.zip', 'rb')
             data = archive.read()
@@ -65,7 +64,7 @@ class User(object):
             archive = zipfile.ZipFile(self.path+'/folder.zip', 'w')
             for root, dirs, files in os.walk('{}/{}'.format(self.path, folder_type)):
                 for f in files:
-                    zip.write(os.path.join(root.lstrip('{}/{}'.format(self.path, folder_type)), f))
+                    archive.write(os.path.join(root, f), os.path.join(root.lstrip('{}/{}'.format(self.path, folder_type)), f))
             archive.close()
             archive = open(self.path+'/folder.zip', 'rb')
             data = archive.read()

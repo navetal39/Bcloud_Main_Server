@@ -6,7 +6,7 @@ Request flags:
 	* LUD = Last Update, return the last time a given folder was updated.
 	* NUD = New Update, update the updates file.
 	* GET = Get, get a specific folder.
-	* SET = Set, write into a file.
+	* WRT = Write, write into a file.
 	* FIL = File, get a specific file.
 	Database functions:
 	* REG = Register, register new user.
