@@ -7,7 +7,7 @@ To do:
 1) Add the part that adds new folders.
 2) Add the part that makes new User objects.
 '''
-from classes import User, ROOT
+from User import User, ROOT
 import zipfile, os, sys
 
 clients_dict = {}
@@ -45,19 +45,27 @@ def respond_to_clients(to_do_list, write_list):
             name=parts[0]
             info.remove(name)
             user=clients_dict[name]
+    
             if flag == "MNF":
                 status = new_user(name)
-                new_data = 'MNFREQNEWDATAPLACEHOLDERABCDEFGHIJKLMNOPQRSTUVWXYZBCLOUDISCOOL'
+                new_data = "NONEWDATA"
             elif flag == "LUD":
                 status, new_data = user.get_folder_info(info[0])
-                
+            elif flag == "NUD":
+                status = user.set_folder_info(info[0], info[1])
+                new_data = "NONEWDATA"
             elif flag == "GET":
                 status, new_data = user.get_folder(info[0])
-
+            elif flag == "SET":
+                status = user.write_to_file(info[0], info[1], info[2])
+                new_data = "NONEWDATA"
             elif flag == "FIL":
                 status, new_data = user.get_file(info[0], info[1])
+            else:
+                status = "WTF"
+                new_data = "NONEWDATA"
 
-            if newdata != 'MNFREQNEWDATAPLACEHOLDERABCDEFGHIJKLMNOPQRSTUVWXYZBCLOUDISCOOL'
+            if newdata != 'NONEWDATA'
                 target.send(status+';'+new_data)
             else:
                 target.send(status)
