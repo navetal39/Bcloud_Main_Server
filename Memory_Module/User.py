@@ -24,7 +24,7 @@ class User(object):
     
     def get_folder_info(self, folder_type):
         try:
-            update_file = open('{}/{}.txt'.format(self.root, folder_type), 'r')
+            update_file = open('{}/{}.txt'.format(self.path, folder_type), 'r')
             data = update_file.read()
             update_file.close()
             return 'SCS', data
@@ -32,7 +32,7 @@ class User(object):
             return 'WTF', 'WTF'
     def set_folder_info(self, folder_type, data):
         try:
-            update_file = open('{}/{}.txt'.format(self.root, folder_type), 'w')
+            update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
             update_file.write(data)
             update_file.close()
             return 'SCS'
@@ -41,8 +41,8 @@ class User(object):
     def get_file(self, folder_type, file_name):
         try:
             archive = zipfile.ZipFile(self.path+'/single.zip', 'w')
-            f = open(self.path+'/{folder}/{fil}'.format(folder=fodler_type, fil=file_name), 'r')
-            archive.write(f, file_name)
+            f = open(self.path+'/{folder}/{fil}'.format(folder=folder_type, fil=file_name), 'r')
+            archive.write(f, file_name) # PROBLEMATIC LINE. FIX IT WHEN YOU CAN, WHOEVER READS THIS!
             archive.close()
             archive = open(self.path+'/single.zip', 'rb')
             data = archive.read()
@@ -57,7 +57,7 @@ class User(object):
             target_file.write(data)
             target_file.close()
             return 'SCS'
-        else:
+        except:
             return 'WTF'
             
     def get_folder(self, folder_type):

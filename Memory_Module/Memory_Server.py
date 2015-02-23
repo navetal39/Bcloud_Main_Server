@@ -65,7 +65,7 @@ def respond_to_clients(to_do_list, write_list):
                 status = "WTF"
                 new_data = "NONEWDATA"
 
-            if newdata != 'NONEWDATA'
+            if newdata != 'NONEWDATA':
                 target.send(status+';'+new_data)
             else:
                 target.send(status)
