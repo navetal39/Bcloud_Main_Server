@@ -30,7 +30,7 @@ def respond_to_clients(to_do_list, write_list):
             elif flag == "EXI":
                 status = database.name_exists(info[0])
                     
-            target.send(status+';'+data)
+            target.send('{};{}'.format(status, data))
             print "Sent data to client" # -For The Record-
         else:
             new_to_do_list.append(pair)
@@ -59,7 +59,6 @@ def main():
 
         to_do_list = Respond_To_Clients(to_do_list, write_list)
 
-main()
 
 '''
 Exciting. Satisfying. Period.

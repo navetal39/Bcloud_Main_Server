@@ -66,7 +66,7 @@ def respond_to_clients(to_do_list, write_list):
                 new_data = "NONEWDATA"
 
             if newdata != 'NONEWDATA':
-                target.send(status+';'+new_data)
+                target.send('{};{};{}'.format(status, data, new_data))
             else:
                 target.send(status)
             print "Sent data to client" # -For The Record-
