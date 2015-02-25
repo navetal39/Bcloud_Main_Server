@@ -2,7 +2,7 @@
 # Pre-first version
 # ===================================
 
-import zipfile, os
+import zipfile, os, zlib
 
 # Change:
 ROOT = "C:/Bcloud"
@@ -30,17 +30,19 @@ class User(object):
             return 'SCS', data
         except:
             return 'WTF', 'WTF'
-    def set_folder_info(self, folder_type, data):
+        
+    def set_folder_info(self, folder_type, info):
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
-            update_file.write(data)
+            update_file.write(info)
             update_file.close()
             return 'SCS'
         except:
             return 'WTF'
+        
     def get_file(self, folder_type, file_name):
         try:
-            archive = zipfile.ZipFile(self.path+'/single.zip', 'w')
+            archive = zipfile.ZipFile(self.path+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
             archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
             archive.close()
             archive = open(self.path+'/single.zip', 'rb')
