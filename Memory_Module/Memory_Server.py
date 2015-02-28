@@ -14,7 +14,7 @@ clients_dict = {}
 
 def new_user(name):
     try:
-        dirpath='{r}/{n}'.format(r = ROOT, n = name)
+        dirpath = '{r}/{n}'.format(r = ROOT, n = name)
         os.makedirs(dirpath)
         os.makedirs(dirpath+'/private')
         os.makedirs(dirpath+'/public')
@@ -40,26 +40,24 @@ def respond_to_clients(to_do_list, write_list):
         target, data = pair
         if target in write_list:
             info = data.split(';')
-            flag = info[0] # flag=command
-            info.remove(flag)
-            name=parts[0]
-            info.remove(name)
-            user=clients_dict[name]
+            command = info[0]; info.remove(command)
+            name = info[0]; info.remove(name)
+            user = clients_dict[name]
     
-            if flag == "MNF":
+            if command == "MNF":
                 status = new_user(name)
                 new_data = "NONEWDATA"
-            elif flag == "LUD":
+            elif command == "LUD":
                 status, new_data = user.get_folder_info(info[0])
-            elif flag == "NUD":
+            elif command == "NUD":
                 status = user.set_folder_info(info[0], info[1])
                 new_data = "NONEWDATA"
-            elif flag == "GET":
+            elif command == "GET":
                 status, new_data = user.get_folder(info[0])
-            elif flag == "WRT":
+            elif command == "WRT":
                 status = user.write_to_file(info[0], info[1], info[2])
                 new_data = "NONEWDATA"
-            elif flag == "FIL":
+            elif command == "FIL":
                 status, new_data = user.get_file(info[0], info[1])
             else:
                 status = "WTF"
@@ -75,8 +73,9 @@ def respond_to_clients(to_do_list, write_list):
     return new_to_do_list
 
 
-def Main():
+def main():
     to_do_list = []
+    open_sockets = []
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0', 3330))
     server_socket.listen(6)
@@ -90,7 +89,7 @@ def Main():
                 print "Client accepted"  # -For The Record-
             else:
                 data = open_socket.recv(1024)
-                if data == '':
+                if data == '"":
                     open_sockets.remove(open_socket)
                     print "Client disconnected"  # -For The Record-
                 else:
