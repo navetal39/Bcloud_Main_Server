@@ -74,6 +74,8 @@ class User(object):
             return 'SCS', data
         except:
             return 'WTF', 'WTF'
+
+
 '''
 Exciting. Satisfying. Period.
 .
