@@ -63,7 +63,7 @@ class User(object):
             
     def get_folder(self, folder_type):
         try:
-            archive = zipfile.ZipFile(self.path+'/folder.zip', 'w')
+            archive = zipfile.ZipFile(self.path+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
             for root, dirs, files in os.walk('{}/{}'.format(self.path, folder_type)):
                 for f in files:
                     archive.write(os.path.join(root, f), os.path.join(root.lstrip('{}/{}'.format(self.path, folder_type)), f))

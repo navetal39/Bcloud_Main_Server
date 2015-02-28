@@ -8,7 +8,7 @@ To do:
 2) Add the part that makes new User objects.
 '''
 from User import User, ROOT
-import zipfile, os, sys
+import zipfile, zlib, os, sys
 
 clients_dict = {}
 
@@ -20,8 +20,8 @@ def new_user(name):
         os.makedirs(dirpath+'/public')
         pri = open (dirpath+'/private.txt', 'w')
         pub = open (dirpath+'/public.txt', 'w')
-        sfz = zipfile.ZipFile(dirpath+'/single.zip', 'w')
-        mfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w')
+        sfz = zipfile.ZipFile(dirpath+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+        mfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         pri.close()
         pub.close()
         sfz.close()
@@ -89,7 +89,7 @@ def main():
                 print "Client accepted"  # -For The Record-
             else:
                 data = open_socket.recv(1024)
-                if data == '"":
+                if data == "":
                     open_sockets.remove(open_socket)
                     print "Client disconnected"  # -For The Record-
                 else:
