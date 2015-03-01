@@ -1,11 +1,6 @@
 # INFO: #
-# First version.
 # Not tested.
 # ===================================
-
-'''
-TO DO:
-'''
 
 import socket, Queue, sys
 from threading import Thread

@@ -1,5 +1,4 @@
 # Info: #
-# Pre-first version
 # ===================================
 
 import zipfile, os, zlib

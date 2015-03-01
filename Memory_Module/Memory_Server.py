@@ -1,12 +1,7 @@
 # Info: #
-# Pre-first version
 # ===================================
 
-'''
-To do:
-1) Add the part that adds new folders.
-2) Add the part that makes new User objects.
-'''
+
 from User import User, ROOT
 import zipfile, zlib, os, sys
 
