@@ -1,12 +1,10 @@
 # INFO: #
-# Isolated testing version - No connection to memory module. 
 # ===================================
 
 from Database_Management import DataBase
-import socket
-import select
-MEMORY_IP='127.0.0.1'
-MEMORY_PORT='3330'
+import socket, select, sys
+sys.path.append('../')
+from COM import *
 
 
 open_sockets = []

@@ -7,8 +7,10 @@
 TO DO:
 '''
 
-import socket, Queue
+import socket, Queue, sys
 from threading import Thread
+sys.path.append('../')
+from COM import *
 
 # Constants: #
 ## General: ##
@@ -17,12 +19,6 @@ SIZE_OF_QUEUE = 40
 ## FLAGS: ##
 TO_DATABASE = ("REG", "AUT", "EXI")
 TO_MEMORY = ("MNF", "LUD", "GET", "NUD", "WRT", "FIL")
-## Connectivity: ##
-PORT = 3417
-MEMORY_IP = '127.0.0.1'
-MEMORY_PORT = '3330'
-DATABASE_IP = '127.0.0.1'
-DATABASE_PORT = '6853'
 
 # Methods: #
 ## File Transfering: ##
@@ -128,7 +124,7 @@ def make_threads_and_queue(num, size):
 def main():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0',PORT))
+    server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))
     print "Running... on port {}".format(port) # -For The Record-
 
     while True:
