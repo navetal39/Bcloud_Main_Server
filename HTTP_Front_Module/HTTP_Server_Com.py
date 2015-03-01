@@ -74,10 +74,10 @@ def do_work():
                     get = True
                 if cmd in TO_MEMORY: # A request for the memory module
                     target_ip = MEMORY_IP
-                    targer_port = MEMORY_PORT
+                    target_port = MEMORY_PORT
                 elif cmd in TO_DATABASE: # A request for the memory module
                     target_ip = DATABASE_IP
-                    targer_port = DATABASE_PORT
+                    target_port = DATABASE_PORT
                 else: # An unknown request
                     raise
             except: # An unknown request
@@ -89,7 +89,7 @@ def do_work():
                 module_response = forward_socket.recv(5000)
                 forward_socket.close()
                 if get: # It was a get request, thus it requires a second operation - obtaining the folder
-                    parsed_module_response = module_response.splot(';')
+                    parsed_module_response = module_response.split(';')
                     flag = parsed_module_response[0]
                     if flag == 'SCS': # Only if the name exists this flag should appear, and only then we should attemt to get the folder
                         req = 'GET;{}'.format(data[1]) # Return the request to it's original form
@@ -120,7 +120,8 @@ def main():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))
-    print "Running... on port {}".format(port) # -For The Record-
+    print "Running... on port {}".format(HTTP_FRONT_PORT) # -For The Record-
+    server_socket.listen(6)
 
     while True:
         client_socket, client_addr = server_socket.accept()

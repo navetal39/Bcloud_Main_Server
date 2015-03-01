@@ -7,9 +7,6 @@ sys.path.append('../')
 from COM import *
 
 
-open_sockets = []
-database=DataBase(MEMORY_IP, MEMORY_PORT)
-
 def respond_to_clients(to_do_list, write_list):
     new_to_do_list = []
     for pair in to_do_list:
@@ -35,10 +32,12 @@ def respond_to_clients(to_do_list, write_list):
     return new_to_do_list
 
 def main():
+    open_sockets = []
+    database=DataBase(MEMORY_IP, MEMORY_PORT)
     to_do_list = []
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0', 6853))
-    server_socket.listen(6)
+    server_socket.listen(64)
 
     while True:
         read_list, write_list, exception_list = select.select([server_socket]+open_sockets, open_sockets, [])
@@ -55,7 +54,7 @@ def main():
                 else:
                     to_do_list.append((open_socket, data))
 
-        to_do_list = Respond_To_Clients(to_do_list, write_list)
+        to_do_list = respond_to_clients(to_do_list, write_list)
 
 
 '''

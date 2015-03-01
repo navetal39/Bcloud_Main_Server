@@ -3,9 +3,23 @@
 
 
 from User import User, ROOT
-import zipfile, zlib, os, sys
+import zipfile, zlib, os, sys, socket, select
 
 clients_dict = {}
+
+def file_send(sock, mess):
+    ''' This method is for sending large files.
+    '''
+    size = len(mess)
+    sock.send('SIZ;{}'.format(size))
+    response = sock.recv(5000)
+    if response == 'NAK':
+        file_send(sock, mess)
+        return
+    elif response == 'ACK':
+        sock.send(mess)
+    else: #Just so there'll be an else...
+        pass
 
 def new_user(name):
     try:
@@ -37,6 +51,8 @@ def respond_to_clients(to_do_list, write_list):
             info = data.split(';')
             command = info[0]; info.remove(command)
             name = info[0]; info.remove(name)
+            if name not in clients_dict.keys():
+                new_client(name)
             user = clients_dict[name]
     
             if command == "MNF":
@@ -48,7 +64,7 @@ def respond_to_clients(to_do_list, write_list):
                 status = user.set_folder_info(info[0], info[1])
                 new_data = "NONEWDATA"
             elif command == "GET":
-                status, new_data = user.get_folder(info[0])
+                status, new_data = user.get_folder('public')
             elif command == "WRT":
                 status = user.write_to_file(info[0], info[1], info[2])
                 new_data = "NONEWDATA"
@@ -58,8 +74,11 @@ def respond_to_clients(to_do_list, write_list):
                 status = "WTF"
                 new_data = "NONEWDATA"
 
-            if newdata != 'NONEWDATA':
-                target.send('{};{};{}'.format(status, data, new_data))
+            if new_data != 'NONEWDATA':
+                if command in ("FIL", "GET"):
+                    file_send(target, new_data)
+                else:
+                    target.send('{};{};{}'.format(status, data, new_data))
             else:
                 target.send(status)
             print "Sent data to client" # -For The Record-
@@ -73,7 +92,7 @@ def main():
     open_sockets = []
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0', 3330))
-    server_socket.listen(6)
+    server_socket.listen(64)
 
     while True:
         read_list, write_list, exception_list = select.select([server_socket]+open_sockets, open_sockets, [])
@@ -90,7 +109,7 @@ def main():
                 else:
                     to_do_list.append((open_socket, data))
 
-        to_do_list = Respond_To_Clients(to_do_list, write_list)
+        to_do_list = respond_to_clients(to_do_list, write_list)
 
 
 '''

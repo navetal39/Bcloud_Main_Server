@@ -11,7 +11,7 @@ class DataBase(object):
         self.MEMORY_IP = ip
         self.MEMORY_PORT = port
         self.MEMORY_SOCKET = socket.socket()
-        self.MEMORY_SOCKET.connect((MEMORY_IP, MEMORY_PORT))
+        self.MEMORY_SOCKET.connect((self.MEMORY_IP, self.MEMORY_PORT))
         self.dict_database = {}
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
