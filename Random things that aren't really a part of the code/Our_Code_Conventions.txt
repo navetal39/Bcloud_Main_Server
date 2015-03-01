@@ -1,3 +1,6 @@
+# INFO: #
+# ===================================
+
 * Naming Conventions:
 	- lower_case_with_underscore - for functions, methods, attributes, variables.
    	- ALL_CAPS_WITH_UNDERSCORE - for constants.
@@ -14,10 +17,13 @@
 
 * Other Conventions:
 	- It's best to put a space before and after a sign as these '='/'=='/'!='/'>'/etc.
+	- At the beginning of evey file you must put the "Info" text. (see the head of this file for an example).
 	- At the end of EVERY text file you MUST put our moto! (see the end of this file for the moto).
 
 
 Keep that and the code will look good! :)
 
+'''
 Exciting. Satisfying. Period.
 .
+'''
