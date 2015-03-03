@@ -4,6 +4,15 @@
 
 from User import User, ROOT
 import zipfile, zlib, os, sys, socket, select
+sys.path.append('../')
+from COM import *
+
+
+# Constants: #
+## General: ##
+NUM_OF_THREADS = 20
+SIZE_OF_QUEUE = 40
+
 
 clients_dict = {}
 
@@ -43,55 +52,51 @@ def new_client(name):
     u = User(name)
     clients_dict[name] = u
 
-def respond_to_clients(to_do_list, write_list):
-    new_to_do_list = []
-    for pair in to_do_list:
-        target, data = pair
-        if target in write_list:
-            info = data.split(';')
-            command = info[0]; info.remove(command)
-            name = info[0]; info.remove(name)
-            if name not in clients_dict.keys():
-                new_client(name)
-            user = clients_dict[name]
-    
-            if command == "MNF":
-                status = new_user(name)
-                new_data = "NONEWDATA"
-            elif command == "LUD":
-                status, new_data = user.get_folder_info(info[0])
-            elif command == "NUD":
-                status = user.set_folder_info(info[0], info[1])
-                new_data = "NONEWDATA"
-            elif command == "GET":
-                status, new_data = user.get_folder('public')
-            elif command == "WRT":
-                status = user.write_to_file(info[0], info[1], info[2])
-                new_data = "NONEWDATA"
-            elif command == "FIL":
-                status, new_data = user.get_file(info[0], info[1])
-            else:
-                status = "WTF"
-                new_data = "NONEWDATA"
-
-            if new_data != 'NONEWDATA':
-                if command in ("FIL", "GET"):
-                    file_send(target, new_data)
-                else:
-                    target.send('{};{};{}'.format(status, data, new_data))
-            else:
-                target.send(status)
-            print "Sent data to client" # -For The Record-
+def respond_to_clients(target, data):
+    try:
+        info = data.split(';')
+        command = info[0]; info.remove(command)
+        name = info[0]; info.remove(name)
+        if name not in clients_dict.keys():
+            new_client(name)
+        user = clients_dict[name]
+        
+        if command == "MNF":
+            status = new_user(name)
+            new_data = "NONEWDATA"
+        elif command == "LUD":
+            status, new_data = user.get_folder_info(info[0])
+        elif command == "NUD":
+            status = user.set_folder_info(info[0], info[1])
+            new_data = "NONEWDATA"
+        elif command == "GET":
+            status, new_data = user.get_folder('public')
+        elif command == "WRT":
+            status = user.write_to_file(info[0], info[1], info[2])
+            new_data = "NONEWDATA"
+        elif command == "FIL":
+            status, new_data = user.get_file(info[0], info[1])
         else:
-            new_to_do_list.append(pair)
-    return new_to_do_list
+            raise
+    except:
+        status = "WTF"
+        new_data = "NONEWDATA"
+    finally:
+        if new_data != 'NONEWDATA':
+            if command in ("FIL", "GET"):
+                file_send(target, new_data)
+            else:
+                target.send('{};{};{}'.format(status, data, new_data))
+        else:
+            target.send(status)
+        print "Sent data to client"
 
 
-def main():
+'''def main():
     to_do_list = []
     open_sockets = []
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0', 3330))
+    server_socket.bind(('0.0.0.0', MEMORY_SOCKET))
     server_socket.listen(64)
 
     while True:
@@ -109,7 +114,39 @@ def main():
                 else:
                     to_do_list.append((open_socket, data))
 
-        to_do_list = respond_to_clients(to_do_list, write_list)
+        to_do_list = respond_to_clients(to_do_list, write_list)'''
+
+def do_work():
+    client_socket, client_addr = q.get()
+    while True:
+        req = client_socket.recv(5000)
+        if req == "":
+            client_socket.close()
+            print "Closed connection" # -For The Record-
+            q.task_done()
+        else:
+            respond_to_clients(client_socket, req)
+
+def make_threads_and_queue(num, size):
+    global q
+    q = Queue.Queue(size)
+    for i in xrange(num):
+        t = Thread(target=do_work)
+        t.deamon = True
+        t.start()
+
+
+def main():
+    make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
+    server_socket = socket.socket()
+    server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))
+    print "Running... on port {}".format(HTTP_FRONT_PORT) # -For The Record-
+    server_socket.listen(6)
+
+    while True:
+        client_socket, client_addr = server_socket.accept()
+        print "A client accepted" # -For The Record-
+        q.put((client_socket, client_addr))
 
 
 '''
