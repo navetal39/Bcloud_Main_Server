@@ -26,13 +26,13 @@ class DataBase(object):
     def __str__(self):
         info=''
         for key in self.dict_database.keys():
-            info+="{name}: {pw}; ".format(name=key, pw=self.dict_database[key])
+            info+="{name}: {pw}\n".format(name=key, pw=self.dict_database[key])
         return info
     
     def __repr__(self):
         info=''
         for key in self.dict_database.keys():
-            info+="{name}: {pw}\n".format(name=key, pw=self.dict_database[key])
+            info+="{name}:{pw}\n".format(name=key, pw=self.dict_database[key])
         return info
 
     def decrypt(self, data):

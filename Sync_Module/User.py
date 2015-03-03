@@ -1,25 +1,27 @@
 # Info: #
 # ===================================
 
-import zipfile, os, zlib
+import sys, socket
+sys.path.append('../')
+from COM import *
+from RECURRING_FUNCTIONS import file_recv
 
-# Change:
-ROOT = "C:/Bcloud"
-
-'''
-To do:
-1) Make 'Get Folder' ignore system files, etc.
-'''
 
 class User(object):
     def __init__(self, username):
         self.username = username
-        self.path = "{root}/{name}".format(root = ROOT, name =self.username)
+        self.memory_socket=socket.socket()
         
     def __str__(self):
         return "A user named {}".format(self.username)
     def __repr__(self):
         return "User:{}".format(self.username)
+
+    def connect():
+        self.memory_socket.connect((MEMORY_IP, MEMORY_PORT))
+
+    def disconnect():
+        self.memory_socket.close()
     
     def get_folder_info(self, folder_type):
         try:
