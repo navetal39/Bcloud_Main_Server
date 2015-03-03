@@ -6,6 +6,7 @@ from User import User, ROOT
 import zipfile, zlib, os, sys, socket, select
 sys.path.append('../')
 from COM import *
+from RECURRING_FUNCTIONS import file_send
 
 
 # Constants: #
@@ -15,20 +16,6 @@ SIZE_OF_QUEUE = 40
 
 
 clients_dict = {}
-
-def file_send(sock, mess):
-    ''' This method is for sending large files.
-    '''
-    size = len(mess)
-    sock.send('SIZ;{}'.format(size))
-    response = sock.recv(5000)
-    if response == 'NAK':
-        file_send(sock, mess)
-        return
-    elif response == 'ACK':
-        sock.send(mess)
-    else: #Just so there'll be an else...
-        pass
 
 def new_user(name):
     try:
@@ -88,7 +75,7 @@ def respond_to_clients(target, data):
             else:
                 target.send('{};{};{}'.format(status, data, new_data))
         else:
-            target.send(status)
+            target.send('{};[}'.format(status, data))
         print "Sent data to client"
 
 def do_work():
