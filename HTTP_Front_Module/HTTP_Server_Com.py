@@ -63,6 +63,7 @@ def do_work():
             client_socket.close()
             print "Closed connection" # -For The Record-
             q.task_done()
+            break
         else:
             try:
                 data = req.split(';')
@@ -82,7 +83,7 @@ def do_work():
                     raise
             except: # An unknown request
                 client_socket.send('WTF')
-            else: # A known request
+            else: # A known reques
                 forward_socket = socket.socket()
                 forward_socket.connect((target_ip, target_port))
                 forward_socket.send(req)

@@ -91,31 +91,6 @@ def respond_to_clients(target, data):
             target.send(status)
         print "Sent data to client"
 
-
-'''def main():
-    to_do_list = []
-    open_sockets = []
-    server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0', MEMORY_SOCKET))
-    server_socket.listen(64)
-
-    while True:
-        read_list, write_list, exception_list = select.select([server_socket]+open_sockets, open_sockets, [])
-        for open_socket in read_list:
-            if open_socket is server_socket:
-                new_client_socket, client_addr = open_socket.accept()
-                open_sockets.append(new_client_socket)
-                print "Client accepted"  # -For The Record-
-            else:
-                data = open_socket.recv(1024)
-                if data == "":
-                    open_sockets.remove(open_socket)
-                    print "Client disconnected"  # -For The Record-
-                else:
-                    to_do_list.append((open_socket, data))
-
-        to_do_list = respond_to_clients(to_do_list, write_list)'''
-
 def do_work():
     client_socket, client_addr = q.get()
     while True:
@@ -124,6 +99,7 @@ def do_work():
             client_socket.close()
             print "Closed connection" # -For The Record-
             q.task_done()
+            break
         else:
             respond_to_clients(client_socket, req)
 
