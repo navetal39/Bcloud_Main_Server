@@ -15,6 +15,10 @@
 		l = list() # creat a new list.
 	- Lines that are 'for the record' will be marked with a comment like so: # -For The Record-
 
+*	Intermodular communication Conventions:
+	- When sending a file, use the "Send File" function
+	- When not sending a file (text message/status/etc.), use the format "<STATUS>;<ORIGINAL_MESSAGE>;<NEW_DATA>". NEW_DATA is optional.
+
 * Other Conventions:
 	- It's best to put a space before and after a sign as these '='/'=='/'!='/'>'/etc.
 	- At the beginning of evey file you must put the "Info" text. (see the head of this file for an example).
