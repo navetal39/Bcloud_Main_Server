@@ -50,7 +50,10 @@ def do_work():
                 forward_socket = socket.socket()
                 forward_socket.connect((target_ip, target_port))
                 forward_socket.send(req)
-                module_response = forward_socket.recv(5000)
+                if cmd == 'LUD':
+                    module_response = file_recv(forward_socket)
+                else:
+                    module_response = forward_socket.recv(5000)
                 forward_socket.close()
                 if get: # It was a get request, thus it requires a second operation - obtaining the folder
                     parsed_module_response = module_response.split(';')

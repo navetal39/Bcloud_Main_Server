@@ -15,7 +15,6 @@ NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 
 
-clients_dict = {}
 
 def new_user(name):
     try:
@@ -34,19 +33,13 @@ def new_user(name):
         return 'SCS'
     except:
         return 'WTF'
-        
-def new_client(name):
-    u = User(name)
-    clients_dict[name] = u
 
 def respond_to_clients(target, data):
     try:
         info = data.split(';')
         command = info[0]; info.remove(command)
         name = info[0]; info.remove(name)
-        if name not in clients_dict.keys():
-            new_client(name)
-        user = clients_dict[name]
+        user = User(name)
         
         if command == "MNF":
             status = new_user(name)
@@ -70,7 +63,7 @@ def respond_to_clients(target, data):
         new_data = "NONEWDATA"
     finally:
         if new_data != 'NONEWDATA':
-            if command in ("FIL", "GET"):
+            if command in ("FIL", "GET", "LUD"):
                 file_send(target, new_data)
             else:
                 target.send('{};{};{}'.format(status, data, new_data))

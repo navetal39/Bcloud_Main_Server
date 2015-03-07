@@ -10,71 +10,48 @@ from RECURRING_FUNCTIONS import file_recv
 class User(object):
     def __init__(self, username):
         self.username = username
-        self.memory_socket=socket.socket()
+        self.sock=socket.socket()
         
     def __str__(self):
         return "A user named {}".format(self.username)
     def __repr__(self):
         return "User:{}".format(self.username)
 
-    def connect():
-        self.memory_socket.connect((MEMORY_IP, MEMORY_PORT))
+    def connect(self, module):
+        if module = 'memory':
+            self.sock.connect((MEMORY_IP, MEMORY_PORT))
+        elif module = 'database':
+            self.sock.connect((DATABASE_IP, DATABASE_PORT))
+        else: # Just so there'll be an else
+            pass
 
-    def disconnect():
-        self.memory_socket.close()
+    def authenticate(self, username, password):
+        self.connect('database')
+        message = 'AUT;{};{}'.format(username, password)
+        self.sock.send(message)
+        response = self.sock.recv(5000)
+        self.disconnect()
+        response_parts = response.split(';')
+        flag = response_parts[0]; response_parts.remove(flag)
+        if response_parts = message.split(';'):
+            return flag
+        else:
+            return 'WTF'
+
+    def disconnect(self):
+        self.sock.close()
     
     def get_folder_info(self, folder_type):
-        try:
-            update_file = open('{}/{}.txt'.format(self.path, folder_type), 'r')
-            data = update_file.read()
-            update_file.close()
-            return 'SCS', data
-        except:
-            return 'WTF', 'WTF'
+        pass
         
     def set_folder_info(self, folder_type, info):
-        try:
-            update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
-            update_file.write(info)
-            update_file.close()
-            return 'SCS'
-        except:
-            return 'WTF'
+        pass
         
     def get_file(self, folder_type, file_name):
-        try:
-            archive = zipfile.ZipFile(self.path+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
-            archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
-            archive.close()
-            archive = open(self.path+'/single.zip', 'rb')
-            data = archive.read()
-            archive.close()
-            return 'SCS', data
-        except:
-            return 'WTF', 'WTF'
+        pass
         
     def write_to_file(self, folder_type, file_name, data):
-        try:
-            target_file = open('{}/{}/{}'.format(self.path, folder_type, file_name), 'wb')
-            target_file.write(data)
-            target_file.close()
-            return 'SCS'
-        except:
-            return 'WTF'
-            
-    def get_folder(self, folder_type):
-        try:
-            archive = zipfile.ZipFile(self.path+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
-            for root, dirs, files in os.walk('{}/{}'.format(self.path, folder_type)):
-                for f in files:
-                    archive.write(os.path.join(root, f), os.path.join(root.lstrip('{}/{}'.format(self.path, folder_type)), f))
-            archive.close()
-            archive = open(self.path+'/folder.zip', 'rb')
-            data = archive.read()
-            archive.close()
-            return 'SCS', data
-        except:
-            return 'WTF', 'WTF'
+        pass
 
 
 '''
