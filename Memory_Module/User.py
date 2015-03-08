@@ -50,6 +50,13 @@ class User(object):
             return 'SCS', data
         except:
             return 'WTF', 'WTF'
+
+    def delete_file(self, folder_type, file_name):
+        try:
+            os.remove('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name))
+            return 'SCS'
+        except:
+            return 'WTF'
         
     def update_folder(self, data):
         try:
@@ -59,6 +66,8 @@ class User(object):
             updated_files = zipfile.ZipFile('{}/updated_files.zip'.format(self.path), 'r')
             updated_files.extract_all()
             updated_files.close()
+            return 'SCS'
+        except WindowsError:
             return 'SCS'
         except:
             return 'WTF'

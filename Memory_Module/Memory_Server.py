@@ -62,6 +62,9 @@ def respond_to_clients(target, data):
             new_data = "NONEWDATA"
         elif command == "FIL":
             status, new_data = user.get_file(info[0], info[1])
+        elif command == "DEL":
+            status = user.delete_file(info[0], info[1])
+            new_data = "NONEWDATA"
         else:
             raise
     except:
