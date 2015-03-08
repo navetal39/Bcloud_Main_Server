@@ -6,7 +6,7 @@ from User import User, ROOT
 import zipfile, zlib, os, sys, socket, select
 sys.path.append('../')
 from COM import *
-from RECURRING_FUNCTIONS import file_send
+from RECURRING_FUNCTIONS import file_send, file_recv
 
 
 # Constants: #
@@ -26,10 +26,12 @@ def new_user(name):
         pub = open (dirpath+'/public.txt', 'w')
         sfz = zipfile.ZipFile(dirpath+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         mfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+        upd = zipfile.ZipFile(dirpath+'/updated_files.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         pri.close()
         pub.close()
         sfz.close()
         mfz.close()
+        upd.close()
         return 'SCS'
     except:
         return 'WTF'
@@ -47,12 +49,16 @@ def respond_to_clients(target, data):
         elif command == "LUD":
             status, new_data = user.get_folder_info(info[0])
         elif command == "NUD":
-            status = user.set_folder_info(info[0], info[1])
+            target.send('ACK;{}'.format(data))
+            new_info = file_recv(target)
+            status = user.set_folder_info(info[0], new_info)
             new_data = "NONEWDATA"
         elif command == "GET":
             status, new_data = user.get_folder('public')
         elif command == "WRT":
-            status = user.write_to_file(info[0], info[1], info[2])
+            target.send('ACK;{}'.format(data))
+            updated_files = file_recv(target)
+            status = user.update_folder(updated_files)
             new_data = "NONEWDATA"
         elif command == "FIL":
             status, new_data = user.get_file(info[0], info[1])

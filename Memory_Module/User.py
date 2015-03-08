@@ -51,11 +51,14 @@ class User(object):
         except:
             return 'WTF', 'WTF'
         
-    def write_to_file(self, folder_type, file_name, data):
+    def update_folder(self, data):
         try:
-            target_file = open('{}/{}/{}'.format(self.path, folder_type, file_name), 'wb')
-            target_file.write(data)
-            target_file.close()
+            updated_files = open('{}/updated_files.zip'.format(self.path), 'wb')
+            updated_files.write(data)
+            updated_files.close()
+            updated_files = zipfile.ZipFile('{}/updated_files.zip'.format(self.path), 'r')
+            updated_files.extract_all()
+            updated_files.close()
             return 'SCS'
         except:
             return 'WTF'

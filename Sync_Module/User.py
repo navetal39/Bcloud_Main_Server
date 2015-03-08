@@ -4,7 +4,7 @@
 import sys, socket
 sys.path.append('../')
 from COM import *
-from RECURRING_FUNCTIONS import file_recv
+from RECURRING_FUNCTIONS import file_send, file_recv
 
 
 class User(object):
@@ -26,32 +26,72 @@ class User(object):
             pass
 
     def authenticate(self, username, password):
-        self.connect('database')
-        message = 'AUT;{};{}'.format(username, password)
-        self.sock.send(message)
-        response = self.sock.recv(5000)
-        self.disconnect()
-        response_parts = response.split(';')
-        flag = response_parts[0]; response_parts.remove(flag)
-        if response_parts = message.split(';'):
-            return flag
-        else:
+        try:
+            self.connect('database')
+            message = 'AUT;{};{}'.format(username, password)
+            self.sock.send(message)
+            response = self.sock.recv(5000)
+            self.disconnect()
+            response_parts = response.split(';')
+            flag = response_parts[0]; response_parts.remove(flag)
+            if response_parts == message.split(';'):
+                return flag
+            else:
+                raise
+        except:
             return 'WTF'
 
     def disconnect(self):
         self.sock.close()
     
     def get_folder_info(self, folder_type):
-        pass
+        try:
+            self.connect('memory')
+            message = 'LUD;{};{}'.format(self.username, folder_type)
+            self.sock.send(message)
+            response = file_recv(self.sock)
+            self.disconnect()
+            return response
+        except:
+            return 'WTF'
         
-    def set_folder_info(self, folder_type, info):
-        pass
+    def update_folder_info(self, folder_type, info):
+        self.connect('memory')
+        message = 'NUD;{};{}'.format(self.username, folder_type)
+        self.sock.send(message)
+        response = self.recv(5000)
+        response_parts = respnse.split(';')
+        flag = response_parts[0]; response_parts.remove(flag)
+        if flag == 'ACK' and response_parts == message.split(';'):
+            file_send(self.sock, info)
+            self.disconnect()
+        else:  
+            self.disconnect()
+            raise
         
     def get_file(self, folder_type, file_name):
-        pass
+        try:
+            self.connect('memory')
+            self.sock.send('FIL;{};{};{}'.format(self.username, folder_type, file_name))
+            data = file_recv(self.sock)
+            self.disconnect()
+            return data
+        except:
+            return 'WTF'
         
-    def write_to_file(self, folder_type, file_name, data):
-        pass
+    def update_folder(self, data):
+        self.connect('memory')
+        message = 'WRT;{}'.format(self.username)
+        self.sock.send(message)
+        response = self.recv(5000)
+        response_parts = respnse.split(';')
+        flag = response_parts[0]; response_parts.remove(flag)
+        if flag == 'ACK' and response_parts == message.split(';'):
+            file_send(self.sock, data)
+            self.disconnect()
+        else:  
+            self.disconnect()
+            raise
 
 
 '''
