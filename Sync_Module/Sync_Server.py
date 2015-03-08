@@ -3,7 +3,7 @@
 
 
 from User import User
-import zipfile, zlib, sys, socket
+import zipfile, zlib, sys, os, socket
 sys.path.append('../')
 from COM import *
 from RECURRING_FUNCTIONS import *
@@ -14,8 +14,21 @@ from RECURRING_FUNCTIONS import *
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 
-def sync(target, user, info):
+def update_files(target, user, to_update):
     pass
+
+def send_files(target, user, to_send):
+    pass
+
+def delete_files(target, user, to_delete):
+    for path in to_delete:
+        
+
+def sync(target, user, info):
+    to_send, to_update, to_delete = info
+    update_status = update_files(target, user, to_update)
+    send_status = send_files(target, user, to_send)
+    delete_status = delete_files(target, user, to_delete)
 
 def respond_to_clients(target, user, data):
     try:
