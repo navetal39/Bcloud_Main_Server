@@ -14,21 +14,57 @@ from RECURRING_FUNCTIONS import *
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 
-def update_files(target, user, to_update):
-    pass
+def update_files(target, folder_type, user, again = True):
+    if again: #So if the server has to try again it won't ask for the data again.
+        secure_send(target, 'ACK') # Server is ready for the file transfer.
+        data = secure_file_recv(target)
+    status = user.update_folder(folder_type, data)
+    if status != 'SCS':
+        update_files(target, folder_type, user, False)
+    else:
+        return status
 
-def send_files(target, user, to_send):
-    pass
+def send_files(target, folder_type, user, to_send, again = True):
+    status, data = user.get_files(folder_type, to_send)
+    if status == 'SCS':
+        secure_file_send(target, data)
+        return 'SCS'
+    elif again:
+        return send_files(target, folder_type, user, to_send, False)
+    else:
+        secure_send(target, 'WTF') # The client will understand that there's a problem and will try again later.
+        return 'WTF'
 
-def delete_files(target, user, to_delete):
-    for path in to_delete:
+def delete_files(target, folder_type, user, to_delete, again = True):
+    bad=[]
+    for item in to_delete:
+        status = user.delete_file(folder_type, item)
+        if status != 'SCS':
+            bad.append(item)
+    if len(bad) and again: # We give each file a second chance to be deleted.
+        delete_files(target, flder_type, user, bad, False)
+    else:
+        return 'SCS'
         
 
 def sync(target, user, info):
-    to_send, to_update, to_delete = info
-    update_status = update_files(target, user, to_update)
-    send_status = send_files(target, user, to_send)
-    delete_status = delete_files(target, user, to_delete)
+    folder_type, to_send_str, to_update_str, to_delete_str = info
+    to_send = to_send_str.split('<>')
+    to_update = to_update_str.split('<>')
+    to_delete = to_delete_str.split('<>')
+    if len(to_update):
+        update_status = 'SCS'
+    else:
+        update_status = update_files(target, folder_type, user) # There's no need to give the function the list of files that needs to be updated since all the system does it extracting all files.
+    if len(to_send):
+        send_status = 'SCS'
+    else:
+        send_status = send_files(target, folder_type, user, to_send)
+    if len(to_delete):
+        delete_status = 'SCS'
+    else:
+        delete_status = delete_files(target, user, folder_type, to_delete)
+    return (update_status, send_status, delete_status)    
 
 def respond_to_clients(target, user, data):
     try:
@@ -43,7 +79,7 @@ def respond_to_clients(target, user, data):
             status = user.set_folder_info(info[0], new_info)
             new_data = "NONEWDATA"
         elif command == "SYN":
-            status = sync(target, user, info)
+            ustatus, sstatus, dstatus = sync(target, user, info)
         else:
             raise
     except:
@@ -51,10 +87,10 @@ def respond_to_clients(target, user, data):
         new_data = "NONEWDATA"
     finally:
         if new_data != 'NONEWDATA':
-            if command in ("LUD", ""):
+            if command == "LUD":
                 file_send(target, new_data)
             else:
-                target.send('{}|{}|{}'.format(status, data, new_data))
+                secure_send(target, 'FIN|{}|{}|{}'.format(ustatus, sstatus, dstatus)
         else:
             target.send('{}|[}'.format(status, data))
         print "Sent data to client"

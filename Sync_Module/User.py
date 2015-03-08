@@ -25,6 +25,9 @@ class User(object):
         else: # Just so there'll be an else
             pass
 
+    def disconnect(self):
+        self.sock.close()
+
     def authenticate(self, password):
         try:
             self.connect('database')
@@ -40,9 +43,6 @@ class User(object):
                 raise
         except:
             return 'WTF'
-
-    def disconnect(self):
-        self.sock.close()
     
     def get_folder_info(self, folder_type):
         try:
@@ -55,7 +55,7 @@ class User(object):
         except:
             return 'WTF', 'WTF'
 
-    def set_folder_info(self, data):
+    def set_folder_info(self, folder_type, data):
         try:
             self.connect('memory')
             message = 'NUD|{}|{}'.format(self.username, folder_type)
@@ -74,35 +74,23 @@ class User(object):
             self.disconnect()
             return 'WTF'
         
-    def update_folder_info(self, folder_type, info):
-        self.connect('memory')
-        message = 'NUD|{}|{}'.format(self.username, folder_type)
-        self.sock.send(message)
-        response = self.recv(5000)
-        response_parts = respnse.split('|')
-        flag = response_parts[0]; response_parts.remove(flag)
-        if flag == 'ACK' and response_parts == message.split('|'):
-            file_send(self.sock, info)
-            self.disconnect()
-            return 'SCS'
-        else:  
-            self.disconnect()
-            return 'WTF'
-        
-    def get_file(self, folder_type, file_name):
+    def get_files(self, folder_type, file_list):
         try:
             self.connect('memory')
-            self.sock.send('FIL|{}|{}|{}'.format(self.username, folder_type, file_name))
+            files = file_list[0]; file_list.remove(files) # There's at least one file
+            for file_name in file_list: # If there's more than one file
+                files+='|{}'.format(file_name)
+            self.sock.send('FLS|{}|{}|{}'.format(self.username, folder_type, files))
             data = file_recv(self.sock)
             self.disconnect()
             return 'SCS', data
         except:
             return 'WTF', 'WTF'
         
-    def update_folder(self, data):
+    def update_folder(self, folder_type, data):
         try:
             self.connect('memory')
-            message = 'WRT|{}'.format(self.username)
+            message = 'WRT|{}|{}'.format(self.username, foler_type)
             self.sock.send(message)
             response = self.recv(5000)
             response_parts = respnse.split('|')
@@ -117,6 +105,20 @@ class User(object):
             self.disconnect()
             return 'WTF'
 
+    def delete_file(self, folder_type, file_name):
+        try:
+            self.connect('memory')
+            self.sock.send('DEL|{}|{}|{}'.format(self.username, folder_type, file_name))
+            response = self.sock.recv(5000)
+            self.disconnect()
+            response_parts = respnse.split('|')
+            flag = response_parts[0]; response_parts.remove(flag)
+            if response_parts == message.split('|'):
+                return flag
+            else:
+                raise
+        except:
+            return 'WTF'
 
 '''
 Exciting. Satisfying. Period.

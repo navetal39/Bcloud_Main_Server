@@ -25,13 +25,15 @@ def new_user(name):
         pri = open (dirpath+'/private.txt', 'w')
         pub = open (dirpath+'/public.txt', 'w')
         sfz = zipfile.ZipFile(dirpath+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
-        mfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+        wfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         upd = zipfile.ZipFile(dirpath+'/updated_files.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+        mfz = zipfile.ZipFile(dirpath+'/multiple.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         pri.close()
         pub.close()
         sfz.close()
-        mfz.close()
+        wfz.close()
         upd.close()
+        mfz.close()
         return 'SCS'
     except:
         return 'WTF'
@@ -56,12 +58,16 @@ def respond_to_clients(target, data):
         elif command == "GET":
             status, new_data = user.get_folder('public')
         elif command == "WRT":
+            forder_type = info[0]
             target.send('ACK|{}'.format(data))
             updated_files = file_recv(target)
-            status = user.update_folder(updated_files)
+            status = user.update_folder(folder_type, updated_files)
             new_data = "NONEWDATA"
-        elif command == "FIL":
-            status, new_data = user.get_file(info[0], info[1])
+        '''elif command == "FIL":
+            status, new_data = user.get_file(info[0], info[1])'''
+        elif command == "FLS":
+            folder_type = info[0]; info.remove(folder_type)
+            status, new_data = user.get_files(folder_type, info)
         elif command == "DEL":
             status = user.delete_file(info[0], info[1])
             new_data = "NONEWDATA"
@@ -72,7 +78,7 @@ def respond_to_clients(target, data):
         new_data = "NONEWDATA"
     finally:
         if new_data != 'NONEWDATA':
-            if command in ("FIL", "GET", "LUD"):
+            if command in ("FIL", "FLS", "GET", "LUD"):
                 file_send(target, new_data)
             else:
                 target.send('{}|{}|{}'.format(status, data, new_data))

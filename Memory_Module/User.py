@@ -3,8 +3,7 @@
 
 import zipfile, os, zlib
 
-# Change:
-ROOT = "C:/Bcloud"
+global ROOT = "C:/Bcloud"
 
 '''
 To do:
@@ -39,10 +38,23 @@ class User(object):
         except:
             return 'WTF'
         
-    def get_file(self, folder_type, file_name):
+    '''def get_file(self, folder_type, file_name):
         try:
             archive = zipfile.ZipFile(self.path+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
             archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
+            archive.close()
+            archive = open(self.path+'/single.zip', 'rb')
+            data = archive.read()
+            archive.close()
+            return 'SCS', data
+        except:
+            return 'WTF', 'WTF''''
+
+    def get_files(self, folder_type, files):
+        try:
+            archive = zipfile.ZipFile(self.path+'/multiple.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+            for file_name in files:
+                archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
             archive.close()
             archive = open(self.path+'/single.zip', 'rb')
             data = archive.read()
@@ -55,19 +67,22 @@ class User(object):
         try:
             os.remove('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name))
             return 'SCS'
+        except WindowsError, error:
+            if error.errno == 2:
+                return 'SCS'
+            else:
+                return 'WTF'
         except:
             return 'WTF'
         
-    def update_folder(self, data):
+    def update_folder(self, folder_type, data):
         try:
             updated_files = open('{}/updated_files.zip'.format(self.path), 'wb')
             updated_files.write(data)
             updated_files.close()
             updated_files = zipfile.ZipFile('{}/updated_files.zip'.format(self.path), 'r')
-            updated_files.extract_all()
+            updated_files.extract_all('{}/{}'.format(self.path, folder_type))
             updated_files.close()
-            return 'SCS'
-        except WindowsError:
             return 'SCS'
         except:
             return 'WTF'
