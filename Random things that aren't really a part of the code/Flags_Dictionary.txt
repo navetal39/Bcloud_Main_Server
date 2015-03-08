@@ -12,6 +12,8 @@ Request flags:
 	* REG = Register, register new user.
 	* AUT = Authenticate, make sure that a given name and a given password match in the database.
 	* EXI = Exists, make sure that a name exists in the database.
+	Sync functions:
+	* SYN = Synchronize, the following information determines which files should be sent, updated or deleted.
 
 Response flags:
 	General flags:

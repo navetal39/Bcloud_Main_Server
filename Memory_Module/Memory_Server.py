@@ -3,7 +3,7 @@
 
 
 from User import User, ROOT
-import zipfile, zlib, os, sys, socket, select
+import zipfile, zlib, os, sys, socket
 sys.path.append('../')
 from COM import *
 from RECURRING_FUNCTIONS import file_send, file_recv
