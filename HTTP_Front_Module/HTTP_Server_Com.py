@@ -29,12 +29,12 @@ def do_work():
             break
         else:
             try:
-                data = req.split(';')
+                data = req.split('|')
                 cmd = data[0]
                 get = False
                 if cmd == 'GET':
                     cmd == 'EXI'
-                    req = 'EXI;{}'.format(data[1]) # Change the command on the request
+                    req = 'EXI|{}'.format(data[1]) # Change the command on the request
                     get = True
                 if cmd in TO_MEMORY: # A request for the memory module
                     target_ip = MEMORY_IP
@@ -56,10 +56,10 @@ def do_work():
                     module_response = forward_socket.recv(5000)
                 forward_socket.close()
                 if get: # It was a get request, thus it requires a second operation - obtaining the folder
-                    parsed_module_response = module_response.split(';')
+                    parsed_module_response = module_response.split('|')
                     flag = parsed_module_response[0]
                     if flag == 'SCS': # Only if the name exists this flag should appear, and only then we should attemt to get the folder
-                        req = 'GET;{}'.format(data[1]) # Return the request to it's original form
+                        req = 'GET|{}'.format(data[1]) # Return the request to it's original form
                         forward_socket.connect((MEMORY_IP, MEMORY_PORT))
                         forward_socket.send(req)
                         module_response = file_recv(forward_socket)

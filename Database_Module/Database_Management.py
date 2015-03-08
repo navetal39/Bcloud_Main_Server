@@ -49,11 +49,11 @@ class DataBase(object):
         ''' This method is dedicated to communicating with the Storage module for setting up new directories.
         '''
         try:
-            message = "MNF;" + name
+            message = "MNF|" + name
             self.MEMORY_SOCKET.send(message)
             response = self.MEMORY_SOCKET.recv(1024)
             if response.startswith(message):
-                return response.lstrip(message+';')
+                return response.lstrip(message+'|')
             else:
                 raise
         except:

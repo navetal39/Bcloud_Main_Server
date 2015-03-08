@@ -28,13 +28,13 @@ class User(object):
     def authenticate(self, password):
         try:
             self.connect('database')
-            message = 'AUT;{};{}'.format(self.username, password)
+            message = 'AUT|{}|{}'.format(self.username, password)
             self.sock.send(message)
             response = self.sock.recv(5000)
             self.disconnect()
-            response_parts = response.split(';')
+            response_parts = response.split('|')
             flag = response_parts[0]; response_parts.remove(flag)
-            if response_parts == message.split(';'):
+            if response_parts == message.split('|'):
                 return flag
             else:
                 raise
@@ -47,7 +47,7 @@ class User(object):
     def get_folder_info(self, folder_type):
         try:
             self.connect('memory')
-            message = 'LUD;{};{}'.format(self.username, folder_type)
+            message = 'LUD|{}|{}'.format(self.username, folder_type)
             self.sock.send(message)
             response = file_recv(self.sock)
             self.disconnect()
@@ -58,13 +58,13 @@ class User(object):
     def set_folder_info(self, data):
         try:
             self.connect('memory')
-            message = 'NUD;{};{}'.format(self.username, folder_type)
+            message = 'NUD|{}|{}'.format(self.username, folder_type)
             self.sock.send(message)
             self.disconnect()
             response = self.recv(5000)
-            response_parts = respnse.split(';')
+            response_parts = respnse.split('|')
             flag = response_parts[0]; response_parts.remove(flag)
-            if flag == 'ACK' and response_parts == message.split(';'):
+            if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
                 self.disconnect()
                 return 'SCS'
@@ -76,12 +76,12 @@ class User(object):
         
     def update_folder_info(self, folder_type, info):
         self.connect('memory')
-        message = 'NUD;{};{}'.format(self.username, folder_type)
+        message = 'NUD|{}|{}'.format(self.username, folder_type)
         self.sock.send(message)
         response = self.recv(5000)
-        response_parts = respnse.split(';')
+        response_parts = respnse.split('|')
         flag = response_parts[0]; response_parts.remove(flag)
-        if flag == 'ACK' and response_parts == message.split(';'):
+        if flag == 'ACK' and response_parts == message.split('|'):
             file_send(self.sock, info)
             self.disconnect()
             return 'SCS'
@@ -92,7 +92,7 @@ class User(object):
     def get_file(self, folder_type, file_name):
         try:
             self.connect('memory')
-            self.sock.send('FIL;{};{};{}'.format(self.username, folder_type, file_name))
+            self.sock.send('FIL|{}|{}|{}'.format(self.username, folder_type, file_name))
             data = file_recv(self.sock)
             self.disconnect()
             return 'SCS', data
@@ -102,12 +102,12 @@ class User(object):
     def update_folder(self, data):
         try:
             self.connect('memory')
-            message = 'WRT;{}'.format(self.username)
+            message = 'WRT|{}'.format(self.username)
             self.sock.send(message)
             response = self.recv(5000)
-            response_parts = respnse.split(';')
+            response_parts = respnse.split('|')
             flag = response_parts[0]; response_parts.remove(flag)
-            if flag == 'ACK' and response_parts == message.split(';'):
+            if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
                 self.disconnect()
                 return 'SCS'

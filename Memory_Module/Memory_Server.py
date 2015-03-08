@@ -38,7 +38,7 @@ def new_user(name):
 
 def respond_to_clients(target, data):
     try:
-        info = data.split(';')
+        info = data.split('|')
         command = info[0]; info.remove(command)
         name = info[0]; info.remove(name)
         user = User(name)
@@ -49,14 +49,14 @@ def respond_to_clients(target, data):
         elif command == "LUD":
             status, new_data = user.get_folder_info(info[0])
         elif command == "NUD":
-            target.send('ACK;{}'.format(data))
+            target.send('ACK|{}'.format(data))
             new_info = file_recv(target)
             status = user.set_folder_info(info[0], new_info)
             new_data = "NONEWDATA"
         elif command == "GET":
             status, new_data = user.get_folder('public')
         elif command == "WRT":
-            target.send('ACK;{}'.format(data))
+            target.send('ACK|{}'.format(data))
             updated_files = file_recv(target)
             status = user.update_folder(updated_files)
             new_data = "NONEWDATA"
@@ -72,9 +72,9 @@ def respond_to_clients(target, data):
             if command in ("FIL", "GET", "LUD"):
                 file_send(target, new_data)
             else:
-                target.send('{};{};{}'.format(status, data, new_data))
+                target.send('{}|{}|{}'.format(status, data, new_data))
         else:
-            target.send('{};[}'.format(status, data))
+            target.send('{}|[}'.format(status, data))
         print "Sent data to client"
 
 def do_work():

@@ -6,7 +6,7 @@ def file_recv(sock, count = 0):
     ''' This method is for reciving large files.
     '''
     response = sock.recv(5000)
-    flag, str_size = response.split(';')
+    flag, str_size = response.split('|')
     try:
         if flag != 'SIZ':
             raise
@@ -27,12 +27,12 @@ def file_send(sock, mess):
     ''' This method is for sending large files.
     '''
     size = len(mess)
-    size_message = 'SIZ;{}'.format(size)
-    sock.send('SIZ;{}'.format(size))
+    size_message = 'SIZ|{}'.format(size)
+    sock.send('SIZ|{}'.format(size))
     response = sock.recv(5000)
-    response_parts = response.split(';')
+    response_parts = response.split('|')
     flag = response_parts[0]; response_parts.remove(flag)
-    if response_parts == size_message.split(';'):
+    if response_parts == size_message.split('|'):
         if flag == 'NAK':
             file_send(sock, mess)
             return
@@ -74,19 +74,19 @@ def secure_file_recv(sock, count = 0):
     ''' This method is for reciving large files.
     '''
     response = secure_recv(sock)
-    flag, str_size = response.split(';')
+    flag, str_size = response.split('|')
     try:
         if flag != 'SIZ':
             raise
         size = int(str_size)
     except:
         if count < 3: #Just making sure that it won't attemt endlessly
-            seure_send(sock, 'NAK;'+response)
+            seure_send(sock, 'NAK|'+response)
             final_response = secure_file_recv(sock, count+1)
         else:
             final_response = 'WTF'
     else:
-        seure_send(sock, 'ACK;'+response)
+        seure_send(sock, 'ACK|'+response)
         final_response = secure_recv(sock, size)
     finally:
         return final_response
@@ -95,10 +95,10 @@ def secure_file_send(sock, mess):
     ''' This method is for sending large files.
     '''
     size = len(mess)
-    size_message = 'SIZ;{}'.format(size)
+    size_message = 'SIZ|{}'.format(size)
     secure_send(sock, size_message)
     response = sock.recv(5000)
-    response_parts = response.split(';')
+    response_parts = response.split('|')
     flag = response_parts[0]; response_parts.remove(flag)
     if flag == 'NAK':
         secure_file_send(sock, mess)

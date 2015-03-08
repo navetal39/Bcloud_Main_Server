@@ -12,7 +12,7 @@ def respond_to_clients(to_do_list, write_list):
     for pair in to_do_list:
         target, data = pair
         if target in write_list:
-            info = data.split(';')
+            info = data.split('|')
             flag = info[0] # flag=command
             info.remove(flag)
             
@@ -25,7 +25,7 @@ def respond_to_clients(to_do_list, write_list):
             elif flag == "EXI":
                 status = database.name_exists(info[0])
                     
-            target.send('{};{}'.format(status, data))
+            target.send('{}|{}'.format(status, data))
             print "Sent data to client" # -For The Record-
         else:
             new_to_do_list.append(pair)

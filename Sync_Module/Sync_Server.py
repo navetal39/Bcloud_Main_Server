@@ -19,13 +19,13 @@ def sync(target, user, info):
 
 def respond_to_clients(target, user, data):
     try:
-        info = data.split(';')
+        info = data.split('|')
         command = info[0]; info.remove(command)
 
         if command == "LUD":
             status, new_data = user.get_folder_info(info[0])
         elif command == "NUD":
-            secure_send(target, 'ACK;{}'.format(data))
+            secure_send(target, 'ACK|{}'.format(data))
             new_info = secure_file_recv(target)
             status = user.set_folder_info(info[0], new_info)
             new_data = "NONEWDATA"
@@ -41,9 +41,9 @@ def respond_to_clients(target, user, data):
             if command in ("LUD", ""):
                 file_send(target, new_data)
             else:
-                target.send('{};{};{}'.format(status, data, new_data))
+                target.send('{}|{}|{}'.format(status, data, new_data))
         else:
-            target.send('{};[}'.format(status, data))
+            target.send('{}|[}'.format(status, data))
         print "Sent data to client"
 
 def do_work():
@@ -51,13 +51,13 @@ def do_work():
     # Connection set-up:
     authentication_info =  secure_recv(client_socket)
     try:
-        flag, username, password = authentication_info.split(';')
+        flag, username, password = authentication_info.split('|')
         user = User(username)
         flag = user.authenticate(password)
     except:
         flag = 'WTF'
     finally:
-        secure_send('{};{}'.format(flag, authentication_info)
+        secure_send('{}|{}'.format(flag, authentication_info)
 
     while True:
         req = secure_recv(client_socket)
