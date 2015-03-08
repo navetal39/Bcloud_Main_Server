@@ -18,9 +18,9 @@ class User(object):
         return "User:{}".format(self.username)
 
     def connect(self, module):
-        if module = 'memory':
+        if module == 'memory':
             self.sock.connect((MEMORY_IP, MEMORY_PORT))
-        elif module = 'database':
+        elif module == 'database':
             self.sock.connect((DATABASE_IP, DATABASE_PORT))
         else: # Just so there'll be an else
             pass

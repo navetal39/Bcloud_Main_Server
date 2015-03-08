@@ -90,7 +90,7 @@ def respond_to_clients(target, user, data):
             if command == "LUD":
                 file_send(target, new_data)
             else:
-                secure_send(target, 'FIN|{}|{}|{}'.format(ustatus, sstatus, dstatus)
+                secure_send(target, 'FIN|{}|{}|{}'.format(ustatus, sstatus, dstatus))
         else:
             target.send('{}|[}'.format(status, data))
         print "Sent data to client"
@@ -106,7 +106,7 @@ def do_work():
     except:
         flag = 'WTF'
     finally:
-        secure_send('{}|{}'.format(flag, authentication_info)
+        secure_send('{}|{}'.format(flag, authentication_info))
 
     while True:
         req = secure_recv(client_socket)
@@ -127,7 +127,7 @@ def make_threads_and_queue(num, size):
         t.start()
 
 
-def main():
+def run():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))

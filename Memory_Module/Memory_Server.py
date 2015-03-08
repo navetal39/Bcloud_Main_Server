@@ -3,7 +3,8 @@
 
 
 from User import User, ROOT
-import zipfile, zlib, os, sys, socket
+import zipfile, zlib, os, sys, socket, Queue
+from threading import Thread
 sys.path.append('../')
 from COM import *
 from RECURRING_FUNCTIONS import file_send, file_recv
@@ -24,16 +25,14 @@ def new_user(name):
         os.makedirs(dirpath+'/public')
         pri = open (dirpath+'/private.txt', 'w')
         pub = open (dirpath+'/public.txt', 'w')
-        sfz = zipfile.ZipFile(dirpath+'/single.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+        flz = zipfile.ZipFile(dirpath+'/files.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         wfz = zipfile.ZipFile(dirpath+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         upd = zipfile.ZipFile(dirpath+'/updated_files.zip', 'w', compression=zipfile.ZIP_DEFLATED)
-        mfz = zipfile.ZipFile(dirpath+'/multiple.zip', 'w', compression=zipfile.ZIP_DEFLATED)
         pri.close()
         pub.close()
-        sfz.close()
+        flz.close()
         wfz.close()
         upd.close()
-        mfz.close()
         return 'SCS'
     except:
         return 'WTF'
@@ -63,8 +62,6 @@ def respond_to_clients(target, data):
             updated_files = file_recv(target)
             status = user.update_folder(folder_type, updated_files)
             new_data = "NONEWDATA"
-        '''elif command == "FIL":
-            status, new_data = user.get_file(info[0], info[1])'''
         elif command == "FLS":
             folder_type = info[0]; info.remove(folder_type)
             status, new_data = user.get_files(folder_type, info)
@@ -107,7 +104,7 @@ def make_threads_and_queue(num, size):
         t.start()
 
 
-def main():
+def run():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))

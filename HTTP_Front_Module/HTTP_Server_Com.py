@@ -6,7 +6,7 @@ import socket, Queue, sys
 from threading import Thread
 sys.path.append('../')
 from COM import *
-from REACURRING_FUNCTIONS import file_send, file_recv
+from RECURRING_FUNCTIONS import file_send, file_recv
 
 # Constants: #
 ## General: ##
@@ -83,7 +83,7 @@ def make_threads_and_queue(num, size):
 
 
 ## Main Activity Method: ##
-def main():
+def run():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))

@@ -31,7 +31,7 @@ def respond_to_clients(to_do_list, write_list):
             new_to_do_list.append(pair)
     return new_to_do_list
 
-def main():
+def run():
     open_sockets = []
     database=DataBase(MEMORY_IP, MEMORY_PORT)
     to_do_list = []
