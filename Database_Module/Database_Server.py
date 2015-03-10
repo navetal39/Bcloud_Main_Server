@@ -1,6 +1,8 @@
 # INFO: #
 # ===================================
 
+print 'database'
+
 from Database_Management import DataBase
 import socket, select, sys
 sys.path.append('../')

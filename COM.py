@@ -7,6 +7,8 @@ DATABASE_IP = '127.0.0.1'
 DATABASE_PORT = 6853
 HTTP_FRONT_IP = '127.0.0.1'
 HTTP_FRONT_PORT = 3417
+SYNC_IP = '127.0.0.1'
+SYNC_PORT = 5126
 
 '''
 Exciting. Satisfying. Period.

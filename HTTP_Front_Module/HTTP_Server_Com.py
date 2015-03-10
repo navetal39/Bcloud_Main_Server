@@ -2,6 +2,8 @@
 # Not tested.
 # ===================================
 
+print 'com'
+
 import socket, Queue, sys
 from threading import Thread
 sys.path.append('../')
@@ -32,16 +34,14 @@ def do_work():
                 data = req.split('|')
                 cmd = data[0]
                 get = False
-                if cmd == 'GET':
-                    cmd == 'EXI'
-                    req = 'EXI|{}'.format(data[1]) # Change the command on the request
-                    get = True
                 if cmd in TO_MEMORY: # A request for the memory module
                     target_ip = MEMORY_IP
                     target_port = MEMORY_PORT
+                    print 'to memory'
                 elif cmd in TO_DATABASE: # A request for the memory module
                     target_ip = DATABASE_IP
                     target_port = DATABASE_PORT
+                    print 'to database'
                 else: # An unknown request
                     raise
             except: # An unknown request
@@ -50,27 +50,13 @@ def do_work():
                 forward_socket = socket.socket()
                 forward_socket.connect((target_ip, target_port))
                 forward_socket.send(req)
-                if cmd == 'LUD':
+                if cmd in ('LUD', 'GET'):
                     module_response = file_recv(forward_socket)
-                else:
-                    module_response = forward_socket.recv(5000)
-                forward_socket.close()
-                if get: # It was a get request, thus it requires a second operation - obtaining the folder
-                    parsed_module_response = module_response.split('|')
-                    flag = parsed_module_response[0]
-                    if flag == 'SCS': # Only if the name exists this flag should appear, and only then we should attemt to get the folder
-                        req = 'GET|{}'.format(data[1]) # Return the request to it's original form
-                        forward_socket.connect((MEMORY_IP, MEMORY_PORT))
-                        forward_socket.send(req)
-                        module_response = file_recv(forward_socket)
-                        forward_socket.close()
-                    elif flag == 'NNM':
-                        module_response = 'NNM'
-                    else:
-                        module_response = 'WTF'
                     file_send(client_socket, module_response)
                 else:
+                    module_response = forward_socket.recv(5000)
                     client_socket.send(module_response)
+                forward_socket.close()
             
 
 def make_threads_and_queue(num, size):

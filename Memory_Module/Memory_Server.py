@@ -1,6 +1,7 @@
 # Info: #
 # ===================================
 
+print 'memory'
 
 from User import User, ROOT
 import zipfile, zlib, os, sys, socket, Queue
@@ -75,18 +76,19 @@ def respond_to_clients(target, data):
         new_data = "NONEWDATA"
     finally:
         if new_data != 'NONEWDATA':
-            if command in ("FIL", "FLS", "GET", "LUD"):
+            if command in ("FLS", "GET", "LUD"):
                 file_send(target, new_data)
             else:
                 target.send('{}|{}|{}'.format(status, data, new_data))
         else:
-            target.send('{}|[}'.format(status, data))
+            target.send('{}|{}'.format(status, data))
         print "Sent data to client"
 
 def do_work():
     client_socket, client_addr = q.get()
     while True:
         req = client_socket.recv(5000)
+        print 'req: '+req
         if req == "":
             client_socket.close()
             print "Closed connection" # -For The Record-
@@ -107,8 +109,8 @@ def make_threads_and_queue(num, size):
 def run():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))
-    print "Running... on port {}".format(HTTP_FRONT_PORT) # -For The Record-
+    server_socket.bind(('0.0.0.0',MEMORY_PORT))
+    print "Running... on port {}".format(MEMORY_PORT) # -For The Record-
     server_socket.listen(6)
 
     while True:

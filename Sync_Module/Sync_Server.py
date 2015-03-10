@@ -1,12 +1,14 @@
 # Info: #
 # ===================================
 
+print 'sync'
 
 from User import User
-import zipfile, zlib, sys, os, socket
+import zipfile, zlib, sys, os, socket, Queue
 sys.path.append('../')
 from COM import *
 from RECURRING_FUNCTIONS import *
+from threading import Thread
 
 
 # Constants: #
@@ -130,8 +132,8 @@ def make_threads_and_queue(num, size):
 def run():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0',HTTP_FRONT_PORT))
-    print "Running... on port {}".format(HTTP_FRONT_PORT) # -For The Record-
+    server_socket.bind(('0.0.0.0',SYNC_PORT))
+    print "Running... on port {}".format(SYNC_PORT) # -For The Record-
     server_socket.listen(6)
 
     while True:
