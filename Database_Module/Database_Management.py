@@ -11,7 +11,6 @@ class DataBase(object):
         self.MEMORY_IP = ip
         self.MEMORY_PORT = port
         self.MEMORY_SOCKET = socket.socket()
-        self.MEMORY_SOCKET.connect((self.MEMORY_IP, self.MEMORY_PORT))
         self.dict_database = {}
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
@@ -35,6 +34,12 @@ class DataBase(object):
             info+="{name}:{pw}\n".format(name=key, pw=self.dict_database[key])
         return info
 
+    def connect(self):
+        self.MEMORY_SOCKET.connect((self.MEMORY_IP, self.MEMORY_PORT))
+
+    def disconnect(self):
+        self.MEMORY_SOCKET.close()
+
     def decrypt(self, data):
         ''' Decrypts the data it gets. Unimplimented.
         '''
@@ -50,8 +55,10 @@ class DataBase(object):
         '''
         try:
             message = "MNF|" + name
+            self.connect()
             self.MEMORY_SOCKET.send(message)
             response = self.MEMORY_SOCKET.recv(1024)
+            self.disconnect()
             if response.startswith(message):
                 return response.lstrip(message+'|')
             else:
