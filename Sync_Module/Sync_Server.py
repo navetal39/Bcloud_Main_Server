@@ -82,19 +82,21 @@ def respond_to_clients(target, user, data):
             new_data = "NONEWDATA"
         elif command == "SYN":
             ustatus, sstatus, dstatus = sync(target, user, info)
+            new_data = "NONEWDATA"
         else:
             raise
+        
     except:
         status = "WTF"
         new_data = "NONEWDATA"
+        
     finally:
-        if new_data != 'NONEWDATA':
-            if command == "LUD":
-                file_send(target, new_data)
-            else:
-                secure_send(target, 'FIN|{}|{}|{}'.format(ustatus, sstatus, dstatus))
+        if command == "LUD":
+            file_send(target, new_data)
+        elif command == "SYN":
+            secure_send(target, 'FIN|{}|{}|{}|{}'.format(data, ustatus, sstatus, dstatus))
         else:
-            target.send('{}|[}'.format(status, data))
+            secure_send(target, '{}|{}'.format(status, data))
         print "Sent data to client"
 
 def do_work():
@@ -102,14 +104,18 @@ def do_work():
     # Connection set-up:
     authentication_info =  secure_recv(client_socket)
     try:
-        flag, username, password = authentication_info.split('|')
-        user = User(username)
-        flag = user.authenticate(password)
+        cmd, username, password = authentication_info.split('|')
+        if cmd == 'AUT':
+            user = User(username)
+            flag = user.authenticate(password)
+        else:
+            raise
     except:
         flag = 'WTF'
     finally:
         secure_send('{}|{}'.format(flag, authentication_info))
-
+    
+    # Requests:
     while True:
         req = secure_recv(client_socket)
         if req == "":
