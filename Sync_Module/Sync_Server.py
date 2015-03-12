@@ -18,54 +18,62 @@ SIZE_OF_QUEUE = 40
 
 def update_files(target, folder_type, user, again = True):
     if again: #So if the server has to try again it won't ask for the data again.
-        secure_send(target, 'ACK') # Server is ready for the file transfer.
+        secure_send(target, 'UPD') # Server is ready for the file transfer.
         data = secure_file_recv(target)
     status = user.update_folder(folder_type, data)
     if status != 'SCS':
-        update_files(target, folder_type, user, False)
-    else:
-        return status
+        if again:
+            update_files(target, folder_type, user, False)
 
 def send_files(target, folder_type, user, to_send, again = True):
     status, data = user.get_files(folder_type, to_send)
     if status == 'SCS':
-        secure_file_send(target, data)
-        return 'SCS'
+        secure_send(target, 'SND')
+        response = secure_recv(target, 7)
+        if response == 'ACK|SND':
+            secure_file_send(target, data)
+        else:
+            raise # Shouldn't get here...
     elif again:
-        return send_files(target, folder_type, user, to_send, False)
+        send_files(target, folder_type, user, to_send, False)
     else:
-        secure_send(target, 'WTF') # The client will understand that there's a problem and will try again later.
-        return 'WTF'
+        secure_send(target, 'SNF')
+        secure_file_send(target, 'SNF')
 
 def delete_files(target, folder_type, user, to_delete, again = True):
-    bad=[]
-    for item in to_delete:
-        status = user.delete_file(folder_type, item)
-        if status != 'SCS':
-            bad.append(item)
-    if len(bad) and again: # We give each file a second chance to be deleted.
-        delete_files(target, flder_type, user, bad, False)
+    secure_send(target, 'DEL')
+    response = secure_recv(target, 7)
+    if response == 'ACK|DEL':
+        bad=[]
+        for item in to_delete:
+            status = user.delete_file(folder_type, item)
+            if status != 'SCS':
+                bad.append(item)
+        if len(bad) and again: # We give each file a second chance to be deleted.
+            delete_files(target, flder_type, user, bad, False)
+        else:
+            return 'SCS'
     else:
-        return 'SCS'
+        raise # Shouldn't get here...
         
 
 def sync(target, user, info):
-    folder_type, to_send_str, to_update_str, to_delete_str = info
+    folder_type, to_send_str, to_update_str, to_delete_str = info.split('|')
     to_send = to_send_str.split('<>')
     to_update = to_update_str.split('<>')
     to_delete = to_delete_str.split('<>')
-    if len(to_update):
+    if not len(to_update[0]): # There are files
         update_status = 'SCS'
     else:
-        update_status = update_files(target, folder_type, user) # There's no need to give the function the list of files that needs to be updated since all the system does it extracting all files.
-    if len(to_send):
+        update_files(target, folder_type, user) # There's no need to give the function the list of files that needs to be updated since all the system does it extracting all files. The list exist in case we'll need it in the future.
+    if not len(to_send[0]): # There are files
         send_status = 'SCS'
     else:
-        send_status = send_files(target, folder_type, user, to_send)
-    if len(to_delete):
+        send_files(target, folder_type, user, to_send)
+    if not len(to_delete[0]): # There are files
         delete_status = 'SCS'
     else:
-        delete_status = delete_files(target, user, folder_type, to_delete)
+        delete_files(target, user, folder_type, to_delete)
     return (update_status, send_status, delete_status)    
 
 def respond_to_clients(target, user, data):
@@ -81,7 +89,9 @@ def respond_to_clients(target, user, data):
             status = user.set_folder_info(info[0], new_info)
             new_data = "NONEWDATA"
         elif command == "SYN":
-            ustatus, sstatus, dstatus = sync(target, user, info)
+            secure_send(target, 'ACK|{}'.format(data))
+            new_info = secure_file_recv(target)
+            sync(target, user, new_info)
             new_data = "NONEWDATA"
         else:
             raise
@@ -94,7 +104,7 @@ def respond_to_clients(target, user, data):
         if command == "LUD":
             file_send(target, new_data)
         elif command == "SYN":
-            secure_send(target, 'FIN|{}|{}|{}|{}'.format(data, ustatus, sstatus, dstatus))
+            secure_send(target, 'FIN')
         else:
             secure_send(target, '{}|{}'.format(status, data))
         print "Sent data to client"

@@ -17,6 +17,13 @@ Request flags:
 	Sync functions:
 	* SYN = Synchronize, the following information determines which files should be sent, updated or deleted.
 
+Syncronization flags:
+	* UPD = Update. Needs to recive the files to update.
+	* SND = Send. About to send the client the files.
+	* SNF = Send Fail. The client updating phase has failed.
+	* DLT = Delete. About to delete the files.
+	* FIN = Finished. Synchronization completed.
+
 Response flags:
 	General flags:
 	* SCS = Success, operation was successful.
