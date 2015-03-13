@@ -1,7 +1,10 @@
 # Info: #
 # ===================================
 
-import zipfile, os, zlib
+import zipfile, os, zlib, sys
+sys.path.append('../')
+from COM import *
+
 
 global ROOT
 ROOT = "C:/Bcloud"

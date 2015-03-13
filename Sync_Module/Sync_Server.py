@@ -72,6 +72,7 @@ def sync(target, user, info):
 
 def respond_to_clients(target, user, data):
     try:
+        print 'recived '+data
         info = data.split('|')
         command = info[0]; info.remove(command)
 
@@ -91,6 +92,7 @@ def respond_to_clients(target, user, data):
             raise
         
     except:
+        print "AN ERROR OCCURED"
         status = "WTF"
         new_data = "NONEWDATA"
         
@@ -117,7 +119,7 @@ def do_work():
     except:
         flag = 'WTF'
     finally:
-        secure_send('{}|{}'.format(flag, authentication_info))
+        secure_send(client_socket, '{}|{}'.format(flag, authentication_info))
     
     # Requests:
     while True:

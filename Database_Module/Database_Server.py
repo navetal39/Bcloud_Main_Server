@@ -39,10 +39,12 @@ def respond_to_clients(to_do_list, write_list):
 
 def run():
     open_sockets = []
+    global database
     database=DataBase(MEMORY_IP, MEMORY_PORT)
     to_do_list = []
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0', 6853))
+    server_socket.bind(('0.0.0.0', DATABASE_PORT))
+    print "Running... on port {}".format(DATABASE_PORT) # -For The Record-
     server_socket.listen(64)
 
     while True:
