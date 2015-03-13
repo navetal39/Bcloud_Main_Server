@@ -1,6 +1,10 @@
 # INFO: #
 # ===================================
 
+'''
+To Do:
+1) Encrypt the database
+'''
 print 'database'
 
 from Database_Management import DataBase
