@@ -62,19 +62,12 @@ def sync(target, user, info):
     to_send = to_send_str.split('<>')
     to_update = to_update_str.split('<>')
     to_delete = to_delete_str.split('<>')
-    if not len(to_update[0]): # There are files
-        update_status = 'SCS'
-    else:
+    if len(to_update[0]): # There are files
         update_files(target, folder_type, user) # There's no need to give the function the list of files that needs to be updated since all the system does it extracting all files. The list exist in case we'll need it in the future.
-    if not len(to_send[0]): # There are files
-        send_status = 'SCS'
-    else:
+    if len(to_send[0]): # There are files
         send_files(target, folder_type, user, to_send)
-    if not len(to_delete[0]): # There are files
-        delete_status = 'SCS'
-    else:
-        delete_files(target, user, folder_type, to_delete)
-    return (update_status, send_status, delete_status)    
+    if len(to_delete[0]): # There are files
+        delete_files(target, user, folder_type, to_delete)    
 
 def respond_to_clients(target, user, data):
     try:

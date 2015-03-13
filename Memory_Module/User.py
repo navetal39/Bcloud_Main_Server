@@ -33,7 +33,10 @@ class User(object):
     def set_folder_info(self, folder_type, info):
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
-            update_file.write(info)
+            if info != 'Empty':
+                update_file.write(info)
+            else: # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
+                update_file.write('')
             update_file.close()
             return 'SCS'
         except:
@@ -41,11 +44,11 @@ class User(object):
 
     def get_files(self, folder_type, files):
         try:
-            archive = zipfile.ZipFile(self.path+'/files.zip', 'w', compression=zipfile.ZIP_DEFLATED)
+            archive = zipfile.ZipFile(self.path+'/files.zip', 'w', compression = zipfile.ZIP_DEFLATED)
             for file_name in files:
                 archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
             archive.close()
-            archive = open(self.path+'/single.zip', 'rb')
+            archive = open(self.path+'/files.zip', 'rb')
             data = archive.read()
             archive.close()
             return 'SCS', data
