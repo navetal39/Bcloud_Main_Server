@@ -18,6 +18,7 @@ class User(object):
         return "User:{}".format(self.username)
 
     def connect(self, module):
+        self.sock=socket.socket()
         if module == 'memory':
             self.sock.connect((MEMORY_IP, MEMORY_PORT))
         elif module == 'database':
