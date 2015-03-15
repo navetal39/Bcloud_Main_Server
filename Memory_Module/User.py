@@ -29,7 +29,9 @@ class User(object):
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'r')
             data = update_file.read()
             update_file.close()
-            return 'SCS', data
+            if data == '':
+                data = 'Empty'
+            return 'SCS', data # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
         except:
             return 'WTF', 'WTF'
         
