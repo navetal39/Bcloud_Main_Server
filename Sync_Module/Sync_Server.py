@@ -59,12 +59,11 @@ def delete_files(target, folder_type, user, to_delete, again = True):
         
 
 def sync(target, user, info):
-    folder_type, to_send_str, to_update_str, to_delete_str = info.split('|')
+    folder_type, to_send_str, to_delete_str = info.split('|')
     to_send = to_send_str.split('<>')
-    to_update = to_update_str.split('<>')
     to_delete = to_delete_str.split('<>')
     if len(to_update[0]): # There are files
-        update_files(target, folder_type, user) # There's no need to give the function the list of files that needs to be updated since all the system does it extracting all files. The list exist in case we'll need it in the future.
+        update_files(target, folder_type, user)
     if len(to_send[0]): # There are files
         send_files(target, folder_type, user, to_send)
     if len(to_delete[0]): # There are files
@@ -92,7 +91,6 @@ def respond_to_clients(target, user, data):
             raise
         
     except:
-        print "AN ERROR OCCURED"
         status = "WTF"
         new_data = "NONEWDATA"
         

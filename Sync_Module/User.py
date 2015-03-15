@@ -61,18 +61,26 @@ class User(object):
             self.connect('memory')
             message = 'NUD|{}|{}'.format(self.username, folder_type)
             self.sock.send(message)
-            self.disconnect()
-            response = self.recv(5000)
-            response_parts = respnse.split('|')
+            response = self.sock.recv(5000)
+            response_parts = response.split('|')
             flag = response_parts[0]; response_parts.remove(flag)
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
+                final_response = self.sock.recv(5000)
                 self.disconnect()
-                return 'SCS'
-            else:  
+                final_response_parts = final_response.split('|')
+                final_flag = final_response_parts[0]; final_response_parts.remove(final_flag)
+                if final_response_parts == message.split('|'):
+                    return final_flag
+                else:
+                    raise
+            else:
                 raise
         except:
-            self.disconnect()
+            try:
+                self.disconnect()
+            except:
+                pass # If it didn't manage do disconnect, then it was already closed.
             return 'WTF'
         
     def get_files(self, folder_type, file_list):

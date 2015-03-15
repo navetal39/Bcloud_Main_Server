@@ -30,7 +30,7 @@ class User(object):
             data = update_file.read()
             update_file.close()
             if data == '':
-                data = 'Empty'
+                data = 'EMPTY'
             return 'SCS', data # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
         except:
             return 'WTF', 'WTF'
@@ -38,7 +38,7 @@ class User(object):
     def set_folder_info(self, folder_type, info):
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
-            if info != 'Empty':
+            if info != 'EMPTY':
                 update_file.write(info)
             else: # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
                 update_file.write('')

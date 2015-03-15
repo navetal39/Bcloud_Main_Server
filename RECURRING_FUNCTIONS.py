@@ -102,7 +102,7 @@ def secure_file_recv(sock, count = 0):
         else:
             final_response = 'WTF'
     else:
-        seure_send(sock, 'ACK|'+response)
+        secure_send(sock, 'ACK|'+response)
         print 'go for it' # for the record...
         final_response = secure_recv(sock, size)
         print 'recived file' # for the record...
