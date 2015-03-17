@@ -42,7 +42,8 @@ class User(object):
                 return flag
             else:
                 raise
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF'
     
     def get_folder_info(self, folder_type):
@@ -53,7 +54,8 @@ class User(object):
             response = file_recv(self.sock)
             self.disconnect()
             return 'SCS', response
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF', 'WTF'
 
     def set_folder_info(self, folder_type, data):
@@ -76,10 +78,12 @@ class User(object):
                     raise
             else:
                 raise
-        except:
+        except Exception, error:
+            print 'ERROR', error
             try:
                 self.disconnect()
-            except:
+            except Exception, error:
+                print 'ERROR', error
                 pass # If it didn't manage do disconnect, then it was already closed.
             return 'WTF'
         
@@ -93,13 +97,14 @@ class User(object):
             data = file_recv(self.sock)
             self.disconnect()
             return 'SCS', data
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF', 'WTF'
         
     def update_folder(self, folder_type, data):
         try:
             self.connect('memory')
-            message = 'WRT|{}|{}'.format(self.username, foler_type)
+            message = 'WRT|{}|{}'.format(self.username, folder_type)
             self.sock.send(message)
             response = self.recv(5000)
             response_parts = respnse.split('|')
@@ -110,7 +115,8 @@ class User(object):
                 return 'SCS'
             else:
                 raise
-        except:
+        except Exception, error:
+            print 'ERROR', error
             self.disconnect()
             return 'WTF'
 
@@ -126,7 +132,8 @@ class User(object):
                 return flag
             else:
                 raise
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF'
 
 '''

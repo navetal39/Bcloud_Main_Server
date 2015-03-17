@@ -32,7 +32,8 @@ class User(object):
             if data == '':
                 data = 'EMPTY'
             return 'SCS', data # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF', 'WTF'
         
     def set_folder_info(self, folder_type, info):
@@ -44,7 +45,8 @@ class User(object):
                 update_file.write('')
             update_file.close()
             return 'SCS'
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF'
 
     def get_files(self, folder_type, files):
@@ -57,7 +59,8 @@ class User(object):
             data = archive.read()
             archive.close()
             return 'SCS', data
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF', 'WTF'
 
     def delete_file(self, folder_type, file_name):
@@ -95,7 +98,8 @@ class User(object):
             data = archive.read()
             archive.close()
             return 'SCS', data
-        except:
+        except Exception, error:
+            print 'ERROR', error
             return 'WTF', 'WTF'
 
 

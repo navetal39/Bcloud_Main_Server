@@ -35,7 +35,8 @@ def new_user(name):
         wfz.close()
         upd.close()
         return 'SCS'
-    except:
+    except Exception, error:
+        print 'ERROR', error
         return 'WTF'
 
 def respond_to_clients(target, data):
@@ -71,7 +72,8 @@ def respond_to_clients(target, data):
             new_data = "NONEWDATA"
         else:
             raise
-    except:
+    except Exception, error:
+        print 'ERROR', error
         status = "WTF"
         new_data = "NONEWDATA"
     finally:
