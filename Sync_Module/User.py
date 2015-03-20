@@ -106,8 +106,8 @@ class User(object):
             self.connect('memory')
             message = 'WRT|{}|{}'.format(self.username, folder_type)
             self.sock.send(message)
-            response = self.recv(5000)
-            response_parts = respnse.split('|')
+            response = self.sock.recv(5000)
+            response_parts = response.split('|')
             flag = response_parts[0]; response_parts.remove(flag)
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
@@ -126,7 +126,7 @@ class User(object):
             self.sock.send('DEL|{}|{}|{}'.format(self.username, folder_type, file_name))
             response = self.sock.recv(5000)
             self.disconnect()
-            response_parts = respnse.split('|')
+            response_parts = response.split('|')
             flag = response_parts[0]; response_parts.remove(flag)
             if response_parts == message.split('|'):
                 return flag

@@ -59,7 +59,7 @@ def respond_to_clients(target, data):
         elif command == "GET":
             status, new_data = user.get_folder('public')
         elif command == "WRT":
-            forder_type = info[0]
+            folder_type = info[0]
             target.send('ACK|{}'.format(data))
             updated_files = file_recv(target)
             status = user.update_folder(folder_type, updated_files)

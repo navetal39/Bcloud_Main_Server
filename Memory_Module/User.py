@@ -81,7 +81,7 @@ class User(object):
             updated_files.write(data)
             updated_files.close()
             updated_files = zipfile.ZipFile('{}/updated_files.zip'.format(self.path), 'r')
-            updated_files.extract_all('{}/{}'.format(self.path, folder_type))
+            updated_files.extractall('{}/{}'.format(self.path, folder_type))
             updated_files.close()
             return 'SCS'
         except:
