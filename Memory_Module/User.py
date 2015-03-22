@@ -27,8 +27,11 @@ class User(object):
     def get_folder_info(self, folder_type):
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'r')
+            print 'gfi: opened file'
             data = update_file.read()
+            print 'gfi: read'
             update_file.close()
+            print 'gfi: closed'
             if data == '':
                 data = 'EMPTY'
             return 'SCS', data # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
@@ -39,11 +42,15 @@ class User(object):
     def set_folder_info(self, folder_type, info):
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
+            print 'sfi: opened file'
             if info != 'EMPTY':
                 update_file.write(info)
+                print 'sfi: wrote info'
             else: # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
                 update_file.write('')
+                print 'sfi: wrote nothing'
             update_file.close()
+            print 'sfi: closed file'
             return 'SCS'
         except Exception, error:
             print 'ERROR', error
@@ -52,12 +59,18 @@ class User(object):
     def get_files(self, folder_type, files):
         try:
             archive = zipfile.ZipFile(self.path+'/files.zip', 'w', compression = zipfile.ZIP_DEFLATED)
+            print 'get: opened archive'
             for file_name in files:
                 archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
+                print 'get: added file'
             archive.close()
+            print 'get: closed archive'
             archive = open(self.path+'/files.zip', 'rb')
+            print 'get: opened archive to read'
             data = archive.read()
+            print 'get: read'
             archive.close()
+            print 'get: closed archive'
             return 'SCS', data
         except Exception, error:
             print 'ERROR', error
@@ -66,6 +79,7 @@ class User(object):
     def delete_file(self, folder_type, file_name):
         try:
             os.remove('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name))
+            print 'del: removed file'
             return 'SCS'
         except WindowsError, error:
             if error.errno == 2:
@@ -78,11 +92,17 @@ class User(object):
     def update_folder(self, folder_type, data):
         try:
             updated_files = open('{}/updated_files.zip'.format(self.path), 'wb')
+            print 'set: opened archive to write'
             updated_files.write(data)
+            print 'set: wrote'
             updated_files.close()
+            print 'set: closed archive'
             updated_files = zipfile.ZipFile('{}/updated_files.zip'.format(self.path), 'r')
+            print 'set: opened archive to extract'
             updated_files.extractall('{}/{}'.format(self.path, folder_type))
+            print 'set: extracted'
             updated_files.close()
+            print 'set: closed archive again'
             return 'SCS'
         except:
             return 'WTF'
