@@ -51,7 +51,7 @@ def delete_files(target, folder_type, user, to_delete, again = True):
             if status != 'SCS':
                 bad.append(item)
         if len(bad) and again: # We give each file a second chance to be deleted.
-            delete_files(target, flder_type, user, bad, False)
+            delete_files(target, folder_type, user, bad, False)
         else:
             return 'SCS'
     else:
@@ -75,7 +75,7 @@ def sync(target, user, info):
         print 'sent files'
     if len(to_delete[0]): # There are files
         print 'deleting files'
-        delete_files(target, user, folder_type, to_delete)
+        delete_files(target, folder_type, user, to_delete)
         print 'deleted files'
 
 def respond_to_clients(target, user, data):

@@ -32,12 +32,19 @@ class User(object):
     def authenticate(self, password):
         try:
             self.connect('database')
+            print 'aut: connected'
             message = 'AUT|{}|{}'.format(self.username, password)
+            print 'aut: made message'
             self.sock.send(message)
+            print 'aut: sent'
             response = self.sock.recv(5000)
+            print 'aut: recived'
             self.disconnect()
+            print 'aut: disconnected'
             response_parts = response.split('|')
+            print 'aut: parts'
             flag = response_parts[0]; response_parts.remove(flag)
+            print 'aut: flag'
             if response_parts == message.split('|'):
                 return flag
             else:
@@ -49,10 +56,15 @@ class User(object):
     def get_folder_info(self, folder_type):
         try:
             self.connect('memory')
+            print 'gfi: connected'
             message = 'LUD|{}|{}'.format(self.username, folder_type)
+            print 'gfi: made message'
             self.sock.send(message)
+            print 'gfi: sent'
             response = file_recv(self.sock)
+            print 'gfi: recived'
             self.disconnect()
+            print 'gfi: disconnected'
             return 'SCS', response
         except Exception, error:
             print 'ERROR', error
@@ -61,17 +73,28 @@ class User(object):
     def set_folder_info(self, folder_type, data):
         try:
             self.connect('memory')
+            print 'sfi: connceted'
             message = 'NUD|{}|{}'.format(self.username, folder_type)
+            print 'sfi: made message'
             self.sock.send(message)
+            print 'sfi: sent'
             response = self.sock.recv(5000)
+            print 'sfi: recived'
             response_parts = response.split('|')
+            print 'sfi: split'
             flag = response_parts[0]; response_parts.remove(flag)
+            print 'sfi: flag'
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
+                print 'sfi: sent file'
                 final_response = self.sock.recv(5000)
+                print 'sfi: final response'
                 self.disconnect()
+                print 'sfi: disconnected'
                 final_response_parts = final_response.split('|')
+                print 'sfi: final parts'
                 final_flag = final_response_parts[0]; final_response_parts.remove(final_flag)
+                print 'sfi: final flag'
                 if final_response_parts == message.split('|'):
                     return final_flag
                 else:
@@ -90,11 +113,16 @@ class User(object):
     def get_files(self, folder_type, file_list):
         try:
             self.connect('memory')
+            print 'gfs: connected'
             files = file_list[0]; file_list.remove(files) # There's at least one file
+            print 'gfs: 1st'
             for file_name in file_list: # If there's more than one file
                 files+='|{}'.format(file_name)
+                print 'gfs: added'
             self.sock.send('FLS|{}|{}|{}'.format(self.username, folder_type, files))
+            print 'gfs: made message'
             data = file_recv(self.sock)
+            print 'gfs: recived'
             self.disconnect()
             return 'SCS', data
         except Exception, error:
@@ -104,14 +132,22 @@ class User(object):
     def update_folder(self, folder_type, data):
         try:
             self.connect('memory')
+            print 'upd: connected'
             message = 'WRT|{}|{}'.format(self.username, folder_type)
+            print 'upd: message made'
             self.sock.send(message)
+            print 'upd: sent message'
             response = self.sock.recv(5000)
+            print 'upd: recived resp'
             response_parts = response.split('|')
+            print 'upd: split'
             flag = response_parts[0]; response_parts.remove(flag)
+            print 'upd: flag: ' + flag
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
+                print 'upd: sent file'
                 self.disconnect()
+                print 'upd: disconnected'
                 return 'SCS'
             else:
                 raise
@@ -123,11 +159,19 @@ class User(object):
     def delete_file(self, folder_type, file_name):
         try:
             self.connect('memory')
-            self.sock.send('DEL|{}|{}|{}'.format(self.username, folder_type, file_name))
+            print 'del: connected'
+            message = 'DEL|{}|{}|{}'.format(self.username, folder_type, file_name)
+            print 'del: message made'
+            self.sock.send(message)
+            print 'del: sent'
             response = self.sock.recv(5000)
+            print 'del: recived'
             self.disconnect()
+            print 'del: disconnected'
             response_parts = response.split('|')
+            print 'del: split'
             flag = response_parts[0]; response_parts.remove(flag)
+            print 'del: flag'
             if response_parts == message.split('|'):
                 return flag
             else:
