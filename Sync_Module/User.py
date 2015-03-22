@@ -146,9 +146,18 @@ class User(object):
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
                 print 'upd: sent file'
+                final_response = self.sock.recv(5000)
+                print 'upd: final recived'
                 self.disconnect()
                 print 'upd: disconnected'
-                return 'SCS'
+                final_response_parts = final_response.split('|')
+                print 'upd: final split'
+                flag = final_response_parts[0]; final_response_parts.remove(flag)
+                print 'upd: final flag'
+                if final_response_parts == message.split('|'):
+                    return flag
+                else:
+                    raise # Shouldn't get here...
             else:
                 raise
         except Exception, error:

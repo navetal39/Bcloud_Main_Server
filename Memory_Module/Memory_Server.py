@@ -1,6 +1,11 @@
 # Info: #
 # ===================================
 
+'''
+To do:
+1) Figure out why the program freezes sometimes
+'''
+
 print 'memory'
 
 from User import User, ROOT
@@ -48,27 +53,39 @@ def respond_to_clients(target, data):
         
         if command == "MNF":
             status = new_user(name)
+            print 'made stuff for', name
             new_data = "NONEWDATA"
         elif command == "LUD":
             status, new_data = user.get_folder_info(info[0])
+            print 'got last update'
         elif command == "NUD":
             target.send('ACK|{}'.format(data))
+            print 'ready for data'
             new_info = file_recv(target)
+            print 'got data'
             status = user.set_folder_info(info[0], new_info)
+            print 'set info'
             new_data = "NONEWDATA"
         elif command == "GET":
             status, new_data = user.get_folder('public')
+            print 'got folder'
         elif command == "WRT":
             folder_type = info[0]
             target.send('ACK|{}'.format(data))
+            print 'ready for data'
             updated_files = file_recv(target)
+            print 'got data'
             status = user.update_folder(folder_type, updated_files)
+            print 'updated info'
             new_data = "NONEWDATA"
         elif command == "FLS":
             folder_type = info[0]; info.remove(folder_type)
+            print 'ready to get data'
             status, new_data = user.get_files(folder_type, info)
+            print 'got files'
         elif command == "DEL":
             status = user.delete_file(info[0], info[1])
+            print 'deleted file'
             new_data = "NONEWDATA"
         else:
             raise
