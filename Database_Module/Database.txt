@@ -1,6 +1,6 @@
 nave:lolwat
 zeev:teachergood
-tamir:harrypotter
+tamir:password1
 mosko:glueten
 heller:black
 luzinski:ginger
