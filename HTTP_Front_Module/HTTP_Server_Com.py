@@ -33,7 +33,6 @@ def do_work():
             try:
                 data = req.split('|')
                 cmd = data[0]
-                get = False
                 if cmd in TO_MEMORY: # A request for the memory module
                     target_ip = MEMORY_IP
                     target_port = MEMORY_PORT
