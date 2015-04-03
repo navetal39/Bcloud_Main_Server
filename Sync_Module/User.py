@@ -10,7 +10,7 @@ from RECURRING_FUNCTIONS import file_send, file_recv
 class User(object):
     def __init__(self, username):
         self.username = username
-        self.sock=socket.socket()
+        self.sock = socket.socket()
         
     def __str__(self):
         return "A user named {}".format(self.username)
