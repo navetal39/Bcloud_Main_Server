@@ -6,6 +6,8 @@ TO DO:
 1) secured functions
 '''
 
+import crypto
+
 # File Transfering: #
 def file_recv(sock, count = 0):
     ''' This method is for reciving large files.
@@ -64,16 +66,19 @@ def file_send(sock, mess):
 def secure_recv(sock, size = 5000):
     ''' This method receives the encrypted message (the ciphertext), decrypts it and returns the plaintext (NOT SSL/TLS).
     '''
-    return sock.recv(size)
+    encMess = sock.recv(size)
+    mess = crypto.decrypt(encMess)
+    return mess
 
 def secure_send(sock, mess):
     ''' This method gets the message (the plaintext), encrypts it and sends it (the ciphertext) (NOT SSL/TLS).
     '''
     print "sending {m}".format(m=mess) # -For The Record-
-    sock.send(mess)
+    encMess = crypto.encrypt(mess)
+    sock.send(encMess)
+    
 
-
-
+## Files: ##
 def secure_file_recv(sock, count = 0):
     ''' This method is for reciving large files.
     '''
