@@ -57,30 +57,20 @@ def file_send(sock, mess):
         print response_parts
         print size_message.split('|')
 
+
+
+
 # Secure communication #:
-
-def secure_accept(server_socket):
-    ''' This method needs to accept a new client and establish a secure TCP connection with him (over SSL/TLS).
-        It will return exacly what the normal accept method returns UNLESS we will need to change it.
-    '''
-    cs,ca = server_socket.accept()
-    return (cs, ca)
-
 def secure_recv(sock, size = 5000):
-    ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
+    ''' This method receives the encrypted message (the ciphertext), decrypts it and returns the plaintext (NOT SSL/TLS).
     '''
     return sock.recv(size)
 
 def secure_send(sock, mess):
-    ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).
+    ''' This method gets the message (the plaintext), encrypts it and sends it (the ciphertext) (NOT SSL/TLS).
     '''
     print "sending {m}".format(m=mess) # -For The Record-
     sock.send(mess)
-
-def secure_close(sock):
-    ''' This method needs to...
-    '''
-    sock.close()
 
 
 

@@ -143,7 +143,7 @@ def do_work():
     while True:
         req = secure_recv(client_socket)
         if req == "":
-            secure_close(client_socket)
+            client_socket.close()
             print "Closed connection" # -For The Record-
             q.task_done()
             break
@@ -162,12 +162,12 @@ def make_threads_and_queue(num, size):
 def run():
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0',SYNC_PORT))
+    server_socket.bind(('0.0.0.0', SYNC_PORT))
     print "Running... on port {}".format(SYNC_PORT) # -For The Record-
     server_socket.listen(6)
 
     while True:
-        client_socket, client_addr = secure_accept(server_socket)
+        client_socket, client_addr = server_socket.accept()
         print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
 
