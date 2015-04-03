@@ -3,6 +3,8 @@
 # ===================================
 
 import socket
+sys.path.append('../')
+import crypto # Check about its path - Tamir
 
 class DataBase(object):
     def __init__(self, ip, port):
@@ -12,26 +14,27 @@ class DataBase(object):
         self.MEMORY_PORT = port
         self.MEMORY_SOCKET = socket.socket()
         self.dict_database = {}
+        
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
-        encrypted_lines=encrypted_database_content.split('\n')
+        encrypted_lines = encrypted_database_content.split('\n')
         for encrypted_line in encrypted_lines:
-            line=self.decrypt(encrypted_line)
+            line = crypto.decrypt(encrypted_line)
             if line != "":
                 name, password = line.split(':')
                 self.dict_database[name] = password
         database_file.close()
 
     def __str__(self):
-        info=''
+        info = ''
         for key in self.dict_database.keys():
-            info+="{name}: {pw}\n".format(name=key, pw=self.dict_database[key])
+            info += "{name}: {pw}\n".format(name=key, pw=self.dict_database[key])
         return info
     
     def __repr__(self):
-        info=''
+        info = ''
         for key in self.dict_database.keys():
-            info+="{name}:{pw}\n".format(name=key, pw=self.dict_database[key])
+            info += "{name}:{pw}\n".format(name=key, pw=self.dict_database[key])
         return info
 
     def connect(self):
@@ -86,7 +89,7 @@ class DataBase(object):
             elif self.name_exists(username) == "NNM":
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
-                encrypted_data=self.encrypt('{n}:{p}'.format(n=username, p=password))
+                encrypted_data = crypto.encrypt('{n}:{p}'.format(n=username, p=password))
                 print >>database, encrypted_data
                 database.close()
                 return self.make_folder(username)
