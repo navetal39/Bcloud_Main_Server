@@ -2,7 +2,7 @@
 # No Encryption.
 # ===================================
 
-import socket
+import socket, sys
 sys.path.append('../')
 import crypto # Check about its path - Tamir
 
