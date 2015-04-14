@@ -43,16 +43,6 @@ class DataBase(object):
     def disconnect(self):
         self.MEMORY_SOCKET.close()
 
-    def decrypt(self, data):
-        ''' Decrypts the data it gets. Unimplimented.
-        '''
-        return data
-
-    def encrypt(self, data):
-        ''' Encrypts the data it gets. Unimplimented.
-        '''
-        return data
-
     def make_folder(self, name):
         ''' This method is dedicated to communicating with the Storage module for setting up new directories.
         '''
