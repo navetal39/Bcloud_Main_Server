@@ -37,7 +37,7 @@ class User(object):
             print 'aut: made message'
             self.sock.send(message)
             print 'aut: sent'
-            response = self.sock.recv(5000)
+            response = self.sock.recv(2048)
             print 'aut: recived'
             self.disconnect()
             print 'aut: disconnected'
