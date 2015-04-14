@@ -17,23 +17,33 @@ def respond_to_clients(to_do_list, write_list):
     new_to_do_list = []
     for pair in to_do_list:
         target, data = pair
+        print 'data: '+data
         if target in write_list:
             info = data.split('|')
             flag = info[0] # flag=command
             info.remove(flag)
             
             if flag == "REG":
+                print 'registering'
                 status = database.register_new_user(info[0], info[1])
+                print 'registered'
                 
             elif flag == "AUT":
+                print 'authenticating'
                 status = database.authenticate(info[0], info[1])
+                print 'authenticated'
                 
             elif flag == "EXI":
+                print 'verifying'
                 status = database.name_exists(info[0])
-                    
-            target.send('{}|{}'.format(status, data))
+                print 'verified'
+
+            our_response = '{}|{}'.format(status, data)
+            print 'sending '+our_response          
+            target.send(our_response)
             print "Sent data to client" # -For The Record-
         else:
+            print 'not in list'
             new_to_do_list.append(pair)
     return new_to_do_list
 

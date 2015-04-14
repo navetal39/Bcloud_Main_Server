@@ -1,3 +1,4 @@
+# -*- coding: cp1255 -*-
 # INFO: #
 # No Encryption.
 # ===================================
@@ -17,7 +18,7 @@ class DataBase(object):
         
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
-        encrypted_lines = encrypted_database_content.split('\n')
+        encrypted_lines = encrypted_database_content.split('§§§')
         for encrypted_line in encrypted_lines:
             line = crypto.decrypt(encrypted_line)
             if line != "":
@@ -38,6 +39,7 @@ class DataBase(object):
         return info
 
     def connect(self):
+        self.MEMORY_SOCKET = socket.socket()
         self.MEMORY_SOCKET.connect((self.MEMORY_IP, self.MEMORY_PORT))
 
     def disconnect(self):
@@ -50,13 +52,17 @@ class DataBase(object):
             message = "MNF|" + name
             self.connect()
             self.MEMORY_SOCKET.send(message)
-            response = self.MEMORY_SOCKET.recv(1024)
+            response = self.MEMORY_SOCKET.recv(5000)
             self.disconnect()
-            if response.startswith(message):
-                return response.lstrip(message+'|')
+            message_parts = message.split('|')
+            response_parts = response.split('|')
+            flag = response_parts[0]; response_parts.remove(flag)
+            if response_parts == message_parts:
+                return flag
             else:
                 raise
-        except:
+        except Exception, e:
+            print 'error: '+e
             return "WTF"
 
     def name_exists(self, name):
@@ -80,7 +86,7 @@ class DataBase(object):
                 self.dict_database[username] = password
                 database = open('database.txt', 'a')
                 encrypted_data = crypto.encrypt('{n}:{p}'.format(n=username, p=password))
-                print >>database, encrypted_data
+                print >>database, encrypted_data+'§§§'
                 database.close()
                 return self.make_folder(username)
             else:
