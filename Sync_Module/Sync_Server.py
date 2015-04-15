@@ -115,7 +115,7 @@ def respond_to_clients(target, user, data):
         
     finally:
         if command == "LUD":
-            file_send(target, new_data)
+            secure_file_send(target, new_data)
         elif command == "SYN":
             secure_send(target, 'FIN')
         else:
