@@ -52,7 +52,7 @@ class DataBase(object):
             message = "MNF|" + name
             self.connect()
             self.MEMORY_SOCKET.send(message)
-            response = self.MEMORY_SOCKET.recv(5000)
+            response = self.MEMORY_SOCKET.recv(len(message)+5)
             self.disconnect()
             message_parts = message.split('|')
             response_parts = response.split('|')

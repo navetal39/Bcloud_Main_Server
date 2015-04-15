@@ -35,6 +35,11 @@ class User(object):
             if data == '':
                 data = 'EMPTY'
             return 'SCS', data # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
+        except IOError, e:
+            if e.errno == 2:
+                return 'NNM', 'NNM'
+            else:
+                return 'WTF', 'WTF'
         except Exception, error:
             print 'ERROR', error
             return 'WTF', 'WTF'

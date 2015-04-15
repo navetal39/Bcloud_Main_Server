@@ -16,14 +16,14 @@ NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 ## FLAGS: ##
 TO_DATABASE = ("REG", "AUT", "EXI")
-TO_MEMORY = ("MNF", "LUD", "GET", "NUD", "WRT", "FIL")
+TO_MEMORY = ("LUD", "GET")
 
 # Methods: #   
 ## General Methods: ##
 def do_work():
     client_socket, client_addr = q.get()
     while True:
-        req = client_socket.recv(5000)
+        req = client_socket.recv(2048)
         if req == "":
             client_socket.close()
             print "Closed connection" # -For The Record-
@@ -53,7 +53,7 @@ def do_work():
                     module_response = file_recv(forward_socket)
                     file_send(client_socket, module_response)
                 else:
-                    module_response = forward_socket.recv(5000)
+                    module_response = forward_socket.recv(len(req)+5)
                     client_socket.send(module_response)
                 forward_socket.close()
             

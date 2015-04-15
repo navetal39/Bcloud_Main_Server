@@ -7,7 +7,6 @@ Request flags:
 	* NUD = New Update, update the updates file.
 	* GET = Get, get a specific folder.
 	* WRT = Write, write into a file.
-	* FIL = File, get a specific file.
 	* FLS = Files. Just like File but with multiple files.
 	* DEL = Delete, delete a specific file.
 	Database functions:
