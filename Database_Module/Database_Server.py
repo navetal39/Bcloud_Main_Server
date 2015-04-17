@@ -65,7 +65,7 @@ def run():
                 open_sockets.append(new_client_socket)
                 print "Client accepted"  # -For The Record-
             else:
-                data = open_socket.recv(1024)
+                data = open_socket.recv(2048)
                 if data == '':
                     open_sockets.remove(open_socket)
                     print "Client disconnected"  # -For The Record-

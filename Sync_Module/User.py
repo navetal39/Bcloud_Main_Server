@@ -37,7 +37,7 @@ class User(object):
             print 'aut: made message'
             self.sock.send(message)
             print 'aut: sent'
-            response = self.sock.recv(2048)
+            response = self.sock.recv(len(message) + 5)
             print 'aut: recived'
             self.disconnect()
             print 'aut: disconnected'
@@ -78,7 +78,7 @@ class User(object):
             print 'sfi: made message'
             self.sock.send(message)
             print 'sfi: sent'
-            response = self.sock.recv(5000)
+            response = self.sock.recv(len(message) + 5)
             print 'sfi: recived'
             response_parts = response.split('|')
             print 'sfi: split'
@@ -87,7 +87,7 @@ class User(object):
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
                 print 'sfi: sent file'
-                final_response = self.sock.recv(5000)
+                final_response = self.sock.recv(len(message) + 5)
                 print 'sfi: final response'
                 self.disconnect()
                 print 'sfi: disconnected'
@@ -137,7 +137,7 @@ class User(object):
             print 'upd: message made'
             self.sock.send(message)
             print 'upd: sent message'
-            response = self.sock.recv(5000)
+            response = self.sock.recv(len(message) + 5)
             print 'upd: recived resp'
             response_parts = response.split('|')
             print 'upd: split'
@@ -146,7 +146,7 @@ class User(object):
             if flag == 'ACK' and response_parts == message.split('|'):
                 file_send(self.sock, data)
                 print 'upd: sent file'
-                final_response = self.sock.recv(5000)
+                final_response = self.sock.recv(len(message) + 5)
                 print 'upd: final recived'
                 self.disconnect()
                 print 'upd: disconnected'
@@ -173,7 +173,7 @@ class User(object):
             print 'del: message made'
             self.sock.send(message)
             print 'del: sent'
-            response = self.sock.recv(5000)
+            response = self.sock.recv(len(message) + 5)
             print 'del: recived'
             self.disconnect()
             print 'del: disconnected'

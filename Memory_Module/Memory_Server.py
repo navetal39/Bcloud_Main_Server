@@ -106,7 +106,7 @@ def respond_to_clients(target, data):
 def do_work():
     client_socket, client_addr = q.get()
     while True:
-        req = client_socket.recv(5000)
+        req = client_socket.recv(2048)
         print 'req: '+req
         if req == "":
             client_socket.close()
