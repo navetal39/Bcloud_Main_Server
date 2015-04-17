@@ -23,23 +23,31 @@ TO_MEMORY = ("LUD", "GET")
 
 def verify(data):
     cmd, name, typ = data
+    print 'cmd: {}, name: {}, type: {}'.format(cmd, name, typ)
     forward_socket = socket.socket()
-    forward_socket.connect((DATABASE_IP, DATABAST_PORT))
+    forward_socket.connect((DATABASE_IP, DATABASE_PORT))
+    print 'connected to database'
     message = 'EXI|' + name
+    print 'sending', message
     forward_socket.send(message)
     response = forward_socket.recv(len(message) + 5)
+    print 'recivec', response
     forward_socket.close()
     response_parts = response.split('|')
+    print 'splitted'
     flag = response_parts[0]; response_parts.remove(flag)
+    print 'flag:', flag
     if response_parts == message.split('|'):
         return flag
     else:
+        print 'not matching'
         return 'WTF'
 
 def do_work():
     client_socket, client_addr = q.get()
     while True:
         req = client_socket.recv(2048)
+        print 'req:', req
         if req == "":
             client_socket.close()
             print "Closed connection" # -For The Record-
@@ -51,6 +59,7 @@ def do_work():
                 cmd = data[0]
                 if cmd == 'LUD': # first step - verification
                     db_response = verify(data)
+                    print 'database said', db_response
                     if db_response == 'SCS':
                         do = True # All good
                     elif db_response == 'NNM':
@@ -82,9 +91,9 @@ def do_work():
                     else:
                         module_response = forward_socket.recv(len(req)+5)
                         client_socket.send(module_response)
+                    forward_socket.close()
                 else: # Database said no
                     file_send(client_socket, db_response) # Client expects a file, so we give him a "file"
-                client_socket.close()
             
 
 def make_threads_and_queue(num, size):
