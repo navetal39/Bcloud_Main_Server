@@ -30,7 +30,7 @@ def send_files(target, folder_type, user, to_send, again = True):
     status, data = user.get_files(folder_type, to_send)
     if status == 'SCS':
         secure_send(target, 'SND')
-        response = secure_recv(target, 7)
+        response = secure_recv(target)
         if response == 'ACK|SND':
             secure_file_send(target, data)
         else:
@@ -43,7 +43,7 @@ def send_files(target, folder_type, user, to_send, again = True):
 
 def delete_files(target, folder_type, user, to_delete, again = True):
     secure_send(target, 'DEL')
-    response = secure_recv(target, 7)
+    response = secure_recv(target)
     if response == 'ACK|DEL':
         bad=[]
         for item in to_delete:

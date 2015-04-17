@@ -80,7 +80,11 @@ def respond_to_clients(target, data):
             new_data = "NONEWDATA"
         elif command == "FLS":
             folder_type = info[0]; info.remove(folder_type)
-            print 'ready to get data'
+            print 'ready to get list'
+            target.send('ACK|{}'.format(data))
+            print 'he now knows it'
+            files_list = file_recv(target).split('|')
+            print 'got list'
             status, new_data = user.get_files(folder_type, info)
             print 'got files'
         elif command == "DEL":

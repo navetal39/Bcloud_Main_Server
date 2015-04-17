@@ -119,12 +119,21 @@ class User(object):
             for file_name in file_list: # If there's more than one file
                 files+='|{}'.format(file_name)
                 print 'gfs: added'
-            self.sock.send('FLS|{}|{}|{}'.format(self.username, folder_type, files))
-            print 'gfs: made message'
-            data = file_recv(self.sock)
-            print 'gfs: recived'
-            self.disconnect()
-            return 'SCS', data
+            message = 'FLS|{}|{}'.format(self.username, folder_type)
+            self.sock.send(message)
+            print 'gfs: sent message'
+            response = self.sock.recv(len(message) + 5)
+            print 'gfs: got response'
+            response_parts = response.split('|')
+            flag = response_parts[0]; response_parts.remove(flag)
+            if flag == 'ACK' and response_parts == message.split('|'):
+                print 'gfs: show time!'
+                file_send(self.sock, files)
+                print 'gfs: sent files'
+                data = file_recv(self.sock)
+                print 'gfs: recived'
+                self.disconnect()
+                return 'SCS', data
         except Exception, error:
             print 'ERROR', error
             return 'WTF', 'WTF'
