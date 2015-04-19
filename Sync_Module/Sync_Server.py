@@ -123,32 +123,33 @@ def respond_to_clients(target, user, data):
         print "Sent data to client"
 
 def do_work():
-    client_socket, client_addr = q.get()
-    # Connection set-up:
-    authentication_info =  secure_recv(client_socket)
-    try:
-        cmd, username, password = authentication_info.split('|')
-        if cmd == 'AUT':
-            user = User(username)
-            flag = user.authenticate(password)
-        else:
-            raise
-    except Exception, error:
-        print 'ERROR', error
-        flag = 'WTF'
-    finally:
-        secure_send(client_socket, '{}|{}'.format(flag, authentication_info))
-    
-    # Requests:
     while True:
-        req = secure_recv(client_socket)
-        if req == "":
-            client_socket.close()
-            print "Closed connection" # -For The Record-
-            q.task_done()
-            break
-        else:
-            respond_to_clients(client_socket, user, req)
+        client_socket, client_addr = q.get()
+        # Connection set-up:
+        authentication_info =  secure_recv(client_socket)
+        try:
+            cmd, username, password = authentication_info.split('|')
+            if cmd == 'AUT':
+                user = User(username)
+                flag = user.authenticate(password)
+            else:
+                raise
+        except Exception, error:
+            print 'ERROR', error
+            flag = 'WTF'
+        finally:
+            secure_send(client_socket, '{}|{}'.format(flag, authentication_info))
+    
+        # Requests:
+        while True:
+            req = secure_recv(client_socket)
+            if req == "":
+                client_socket.close()
+                print "Closed connection" # -For The Record-
+                q.task_done()
+                break
+            else:
+                respond_to_clients(client_socket, user, req)
 
 def make_threads_and_queue(num, size):
     global q

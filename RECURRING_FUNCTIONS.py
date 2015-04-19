@@ -66,7 +66,7 @@ def file_send(sock, mess):
 def secure_recv(sock, size = 2048):
     ''' This method receives the encrypted message (the ciphertext), decrypts it and returns the plaintext (NOT SSL/TLS).
     '''
-    encMess = sock.recv(size)
+    encMess = sock.recv(size+1)
     mess = crypto.decrypt(encMess)
     return mess
 

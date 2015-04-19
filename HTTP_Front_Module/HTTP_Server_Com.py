@@ -44,56 +44,57 @@ def verify(data):
         return 'WTF'
 
 def do_work():
-    client_socket, client_addr = q.get()
     while True:
-        req = client_socket.recv(2048)
-        print 'req:', req
-        if req == "":
-            client_socket.close()
-            print "Closed connection" # -For The Record-
-            q.task_done()
-            break
-        else:
-            try:
-                data = req.split('|')
-                cmd = data[0]
-                if cmd == 'LUD': # first step - verification
-                    db_response = verify(data)
-                    print 'database said', db_response
-                    if db_response == 'SCS':
-                        do = True # All good
-                    elif db_response == 'NNM':
-                        do = False # Not good
+        client_socket, client_addr = q.get()
+        while True:
+            req = client_socket.recv(2048)
+            print 'req:', req
+            if req == "":
+                client_socket.close()
+                print "Closed connection" # -For The Record-
+                q.task_done()
+                break
+            else:
+                try:
+                    data = req.split('|')
+                    cmd = data[0]
+                    if cmd == 'LUD': # first step - verification
+                        db_response = verify(data)
+                        print 'database said', db_response
+                        if db_response == 'SCS':
+                            do = True # All good
+                        elif db_response == 'NNM':
+                            do = False # Not good
+                        else:
+                            do = False # Really not good
                     else:
-                        do = False # Really not good
-                else:
-                    do = True # Normal
-                if cmd in TO_MEMORY: # A request for the memory module
-                    target_ip = MEMORY_IP
-                    target_port = MEMORY_PORT
-                    print 'to memory'
-                elif cmd in TO_DATABASE: # A request for the memory module
-                    target_ip = DATABASE_IP
-                    target_port = DATABASE_PORT
-                    print 'to database'
-                else: # An unknown request
-                    raise
-            except: # An unknown request
-                client_socket.send('WTF')
-            else: # A known reques
-                if do: # All was good
-                    forward_socket = socket.socket()
-                    forward_socket.connect((target_ip, target_port))
-                    forward_socket.send(req)
-                    if cmd in ('LUD', 'GET'):
-                        module_response = file_recv(forward_socket)
-                        file_send(client_socket, module_response)
-                    else:
-                        module_response = forward_socket.recv(len(req)+5)
-                        client_socket.send(module_response)
-                    forward_socket.close()
-                else: # Database said no
-                    file_send(client_socket, db_response) # Client expects a file, so we give him a "file"
+                        do = True # Normal
+                    if cmd in TO_MEMORY: # A request for the memory module
+                        target_ip = MEMORY_IP
+                        target_port = MEMORY_PORT
+                        print 'to memory'
+                    elif cmd in TO_DATABASE: # A request for the memory module
+                        target_ip = DATABASE_IP
+                        target_port = DATABASE_PORT
+                        print 'to database'
+                    else: # An unknown request
+                        raise
+                except: # An unknown request
+                    client_socket.send('WTF')
+                else: # A known reques
+                    if do: # All was good
+                        forward_socket = socket.socket()
+                        forward_socket.connect((target_ip, target_port))
+                        forward_socket.send(req)
+                        if cmd in ('LUD', 'GET'):
+                            module_response = file_recv(forward_socket)
+                            file_send(client_socket, module_response)
+                        else:
+                            module_response = forward_socket.recv(len(req)+5)
+                            client_socket.send(module_response)
+                        forward_socket.close()
+                    else: # Database said no
+                        file_send(client_socket, db_response) # Client expects a file, so we give him a "file"
             
 
 def make_threads_and_queue(num, size):

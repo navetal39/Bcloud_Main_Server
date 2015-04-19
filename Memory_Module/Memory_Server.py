@@ -84,8 +84,8 @@ def respond_to_clients(target, data):
             target.send('ACK|{}'.format(data))
             print 'he now knows it'
             files_list = file_recv(target).split('|')
-            print 'got list'
-            status, new_data = user.get_files(folder_type, info)
+            print 'got list: ' + str(files_list)
+            status, new_data = user.get_files(folder_type, files_list)
             print 'got files'
         elif command == "DEL":
             status = user.delete_file(info[0], info[1])
@@ -108,17 +108,26 @@ def respond_to_clients(target, data):
         print "Sent data to client"
 
 def do_work():
-    client_socket, client_addr = q.get()
     while True:
-        req = client_socket.recv(2048)
-        print 'req: '+req
-        if req == "":
-            client_socket.close()
-            print "Closed connection" # -For The Record-
-            q.task_done()
-            break
-        else:
-            respond_to_clients(client_socket, req)
+        print 'start'
+        client_socket, client_addr = q.get()
+        print 'Got a new client!'
+        while True:
+            try:
+                req = client_socket.recv(2048)
+            except Exception, e:
+                if e.errno == 10054:
+                    req = ''
+                else:
+                    raise
+            print 'req: '+req
+            if req == "":
+                client_socket.close()
+                print "Closed connection" # -For The Record-
+                q.task_done()
+                break
+            else:
+                respond_to_clients(client_socket, req)
 
 def make_threads_and_queue(num, size):
     global q
@@ -140,6 +149,9 @@ def run():
         client_socket, client_addr = server_socket.accept()
         print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
+        print "added to queue"
+        if q.full():
+            print 'queue is full!'
 
 
 '''
