@@ -9,22 +9,26 @@ from COM import *
 global ROOT
 ROOT = "C:/Bcloud"
 
-'''
-To do:
-1) Make 'Get Folder' ignore system files, etc.
-'''
 
 class User(object):
     def __init__(self, username):
+        ''' Sets up a new user
+        '''
         self.username = username
-        self.path = "{root}/{name}".format(root = ROOT, name =self.username)
+        self.path = "{root}/{name}".format(root = ROOT, name =self.username) # The path to the main directory of the user, used as a "shortcut"
         
     def __str__(self):
+        ''' Used for debug
+        '''
         return "A user named {}".format(self.username)
     def __repr__(self):
+        ''' Used for debug
+        '''
         return "User:{}".format(self.username)
     
     def get_folder_info(self, folder_type):
+        ''' Gets the content of a folder's updates file - A text that contains the names of the files and the last time each was changed on the client's side.
+        '''
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'r')
             print 'gfi: opened file'
@@ -36,7 +40,7 @@ class User(object):
                 data = 'EMPTY'
             return 'SCS', data # If the folder is empty the client sends 'Empty' rather than '', just so there won't be problems...
         except IOError, e:
-            if e.errno == 2:
+            if e.errno == 2: # IOError 2 means the path does not exist. Since we know that each client has these files, it means the client does not exist.
                 return 'NNM', 'NNM'
             else:
                 return 'WTF', 'WTF'
@@ -45,6 +49,8 @@ class User(object):
             return 'WTF', 'WTF'
         
     def set_folder_info(self, folder_type, info):
+        ''' Updates the content of the folder's info file.
+        '''
         try:
             update_file = open('{}/{}.txt'.format(self.path, folder_type), 'w')
             print 'sfi: opened file'
@@ -62,7 +68,10 @@ class User(object):
             return 'WTF'
 
     def get_files(self, folder_type, files):
+        ''' Gets the list of files given, all compressed into a zip file.
+        '''
         try:
+            # The first time we open the archive we do it using the "zipfile" module, and we do it to write files into the archive.
             archive = zipfile.ZipFile(self.path+'/files.zip', 'w', compression = zipfile.ZIP_DEFLATED)
             print 'get: opened archive'
             for file_name in files:
@@ -70,6 +79,7 @@ class User(object):
                 print 'get: added file'
             archive.close()
             print 'get: closed archive'
+            # The second time we open the archive we do it using the normal "open" function, and we do it to read the file's content as a bitestream.
             archive = open(self.path+'/files.zip', 'rb')
             print 'get: opened archive to read'
             data = archive.read()
@@ -82,6 +92,8 @@ class User(object):
             return 'WTF', 'WTF'
 
     def delete_file(self, folder_type, file_name):
+        ''' deletes a specific file from a folder.
+        '''
         try:
             os.remove('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name))
             print 'del: removed file'
@@ -95,6 +107,8 @@ class User(object):
             return 'WTF'
         
     def update_folder(self, folder_type, data):
+        ''' Gets an archive filled with updated files and folders, and extracts those into the given folder.
+        '''
         try:
             updated_files = open('{}/updated_files.zip'.format(self.path), 'wb')
             print 'set: opened archive to write'
@@ -113,6 +127,8 @@ class User(object):
             return 'WTF'
             
     def get_folder(self, folder_type):
+        ''' archives an entire folder and returns the content of the archive as a bitestream.
+        '''
         try:
             archive = zipfile.ZipFile(self.path+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
             for root, dirs, files in os.walk('{}/{}'.format(self.path, folder_type)):
