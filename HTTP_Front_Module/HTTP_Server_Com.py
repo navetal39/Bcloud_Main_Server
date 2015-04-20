@@ -47,7 +47,13 @@ def do_work():
     while True:
         client_socket, client_addr = q.get()
         while True:
-            req = client_socket.recv(2048)
+            try:
+                req = client_socket.recv(2048)
+            except Exception, e:
+                if e.errno == 10054: # A forced connection close
+                    req = ''
+                else:
+                    raise
             print 'req:', req
             if req == "":
                 client_socket.close()
