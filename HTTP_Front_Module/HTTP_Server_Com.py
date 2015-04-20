@@ -15,13 +15,13 @@ from RECURRING_FUNCTIONS import file_send, file_recv
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 ## FLAGS: ##
-TO_DATABASE = ("REG", "AUT", "EXI")
-TO_MEMORY = ("LUD", "GET")
+TO_DATABASE = ("REG", "AUT", "EXI") # List of commands that the database module takes care of that this module may recive.
+TO_MEMORY = ("LUD", "GET") # List of commands that the memory module takes care of that this module may recive.
 
 # Methods: #   
 ## General Methods: ##
 
-def verify(data):
+def verify(data): # Verifies a user's existance - used before asking the memory module for a folder
     cmd, name, typ = data
     print 'cmd: {}, name: {}, type: {}'.format(cmd, name, typ)
     forward_socket = socket.socket()
@@ -86,10 +86,10 @@ def do_work():
                         forward_socket = socket.socket()
                         forward_socket.connect((target_ip, target_port))
                         forward_socket.send(req)
-                        if cmd in ('LUD', 'GET'):
+                        if cmd in ('LUD', 'GET'): # The command requests a file
                             module_response = file_recv(forward_socket)
                             file_send(client_socket, module_response)
-                        else:
+                        else: # The command requests a simple status response
                             module_response = forward_socket.recv(len(req)+5)
                             client_socket.send(module_response)
                         forward_socket.close()
