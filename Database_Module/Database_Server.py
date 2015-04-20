@@ -14,9 +14,9 @@ def respond_to_clients(to_do_list, write_list):
     for pair in to_do_list:
         target, data = pair
         print 'data: '+data
-        if target in write_list:
+        if target in write_list: # If the target is ready to recive a response...
             info = data.split('|')
-            flag = info[0] # flag=command
+            flag = info[0] # flag = command
             info.remove(flag)
             
             if flag == "REG":
@@ -33,14 +33,19 @@ def respond_to_clients(to_do_list, write_list):
                 print 'verifying'
                 status = database.name_exists(info[0])
                 print 'verified'
-
+            
+            else:
+                print 'unknown command!'
+                status = 'WTF'
+                print "returning 'WTF'"
+            
             our_response = '{}|{}'.format(status, data)
-            print 'sending '+our_response          
+            print 'sending '+ our_response          
             target.send(our_response)
             print "Sent data to client" # -For The Record-
-        else:
+        else: # Target isn't ready, sending it the response will be pointless.
             print 'not in list'
-            new_to_do_list.append(pair)
+            new_to_do_list.append(pair) # Putting the pair back in the list , to re-visit later.
     return new_to_do_list
 
 def run():
@@ -56,11 +61,11 @@ def run():
     while True:
         read_list, write_list, exception_list = select.select([server_socket]+open_sockets, open_sockets, [])
         for open_socket in read_list:
-            if open_socket is server_socket:
+            if open_socket is server_socket: # The main server socket recived a message - It's a new client!
                 new_client_socket, client_addr = open_socket.accept()
-                open_sockets.append(new_client_socket)
+                open_sockets.append(new_client_socket) # Add to the listening list
                 print "Client accepted"  # -For The Record-
-            else:
+            else: # An existing client has sent a message - It's a request!
                 data = open_socket.recv(2048)
                 if data == '':
                     open_sockets.remove(open_socket)
