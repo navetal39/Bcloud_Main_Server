@@ -35,3 +35,6 @@ Response flags:
 	* NPW = No Password, the name that was given doesn't match the password that was given.
 	Flags that you may get from the memory module:
 	* SIZ = Size. The following data isn't the actual data but it's size. Used for file transfer.
+	* NNMN = No Name, the user with that name, if existant, does not have folders.
+	Extra flags:
+	* EMP = Empty. The HTTP server uses it to note that it recived "EMPTY". This flag is only used in the HTTP server and not in inter-modular communication.
