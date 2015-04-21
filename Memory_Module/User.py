@@ -75,7 +75,7 @@ class User(object):
             archive = zipfile.ZipFile(self.path+'/files.zip', 'w', compression = zipfile.ZIP_DEFLATED)
             print 'get: opened archive'
             for file_name in files:
-                archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name)
+                archive.write('{path}/{folder}/{fil}'.format(path = self.path, folder = folder_type, fil = file_name), file_name) # Accesses the file with the full path, writes it into the archive with the relative path.
                 print 'get: added file'
             archive.close()
             print 'get: closed archive'
@@ -110,12 +110,14 @@ class User(object):
         ''' Gets an archive filled with updated files and folders, and extracts those into the given folder.
         '''
         try:
+            # The first time we open the file we do it as a normal file in order to write the bitestream
             updated_files = open('{}/updated_files.zip'.format(self.path), 'wb')
             print 'set: opened archive to write'
             updated_files.write(data)
             print 'set: wrote'
             updated_files.close()
             print 'set: closed archive'
+            # The second time we open the file we do it as a zipfile in order to access the "extractall" function
             updated_files = zipfile.ZipFile('{}/updated_files.zip'.format(self.path), 'r')
             print 'set: opened archive to extract'
             updated_files.extractall('{}/{}'.format(self.path, folder_type))
@@ -130,11 +132,13 @@ class User(object):
         ''' archives an entire folder and returns the content of the archive as a bitestream.
         '''
         try:
+            # First opening as a zip archive
             archive = zipfile.ZipFile(self.path+'/folder.zip', 'w', compression=zipfile.ZIP_DEFLATED)
             for root, dirs, files in os.walk('{}/{}'.format(self.path, folder_type)):
                 for f in files:
-                    archive.write(os.path.join(root, f), os.path.join(root.lstrip('{}/{}'.format(self.path, folder_type)), f))
+                    archive.write(os.path.join(root, f), os.path.join(root[len('{}/{}'.format(self.path, folder_type)):], f)) # We write into the archive using the relative path, not the full one.
             archive.close()
+            # Second opening as a normal file
             archive = open(self.path+'/folder.zip', 'rb')
             data = archive.read()
             archive.close()

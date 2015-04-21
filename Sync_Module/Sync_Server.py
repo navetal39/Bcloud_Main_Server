@@ -20,11 +20,11 @@ SIZE_OF_QUEUE = 40
 def update_files(target, folder_type, user, data = '', again = True):
     if again: #So if the server has to try again it won't ask for the data again.
         secure_send(target, 'UPD') # Server is ready for the file transfer.
-        data = secure_file_recv(target)
+        data = secure_file_recv(target) # Recives the files data
     status = user.update_folder(folder_type, data)
     if status != 'SCS':
         if again:
-            update_files(target, folder_type, user, data, False)
+            update_files(target, folder_type, user, data, False) # Try to re-do it one more time.
 
 def send_files(target, folder_type, user, to_send, again = True):
     status, data = user.get_files(folder_type, to_send)
@@ -36,10 +36,9 @@ def send_files(target, folder_type, user, to_send, again = True):
         else:
             raise # Shouldn't get here...
     elif again:
-        send_files(target, folder_type, user, to_send, False)
+        send_files(target, folder_type, user, to_send, False)# Try to re-do it one more time.
     else:
-        secure_send(target, 'SNF')
-        secure_file_send(target, 'SNF')
+        secure_send(target, 'SNF') # Informing the user that the server could not update him. Support currently unimplimented.
 
 def delete_files(target, folder_type, user, to_delete, again = True):
     secure_send(target, 'DEL')
@@ -51,7 +50,7 @@ def delete_files(target, folder_type, user, to_delete, again = True):
             if status != 'SCS':
                 bad.append(item)
         if len(bad) and again: # We give each file a second chance to be deleted.
-            delete_files(target, folder_type, user, bad, False)
+            delete_files(target, folder_type, user, bad, False)# Try to re-do it one more time.
         else:
             return 'SCS'
     else:
@@ -59,21 +58,24 @@ def delete_files(target, folder_type, user, to_delete, again = True):
         
 
 def sync(target, user, info):
+    ''' A method that takes care of the entire sync proccess according to BCSP. Uses 3 helping methods.
+    '''
     folder_type, to_send_str, needs_to_update, to_delete_str = info.split('|')
     print 'info split'
+    # The server recives long strings of pathes seperated with '<>' instead of lists, so it needs to convert the strings into lists
     to_send = to_send_str.split('<>')
     print '<>'
     to_delete = to_delete_str.split('<>')
     print '<><>'
-    if needs_to_update == 'UPDATE': # There are files
+    if needs_to_update == 'UPDATE': # There are files to recive
         print 'updating files'
         update_files(target, folder_type, user)
         print 'updated files'
-    if len(to_send[0]): # There are files
+    if len(to_send[0]): # There are files to send
         print 'sending files'
         send_files(target, folder_type, user, to_send)
         print 'sent files'
-    if len(to_delete[0]): # There are files
+    if len(to_delete[0]): # There are files to delete on this side
         print 'deleting files'
         delete_files(target, folder_type, user, to_delete)
         print 'deleted files'
@@ -86,10 +88,10 @@ def respond_to_clients(target, user, data):
         command = info[0]; info.remove(command)
         print 'seperated command'
 
-        if command == "LUD":
+        if command == "LUD": # Request for last update
             status, new_data = user.get_folder_info(info[0])
             print 'got last update'
-        elif command == "NUD":
+        elif command == "NUD": # Request to update last updates info
             secure_send(target, 'ACK|{}'.format(data))
             print 'ready for new update'
             new_info = secure_file_recv(target)
@@ -97,7 +99,7 @@ def respond_to_clients(target, user, data):
             status = user.set_folder_info(info[0], new_info)
             print 'set new update'
             new_data = "NONEWDATA"
-        elif command == "SYN":
+        elif command == "SYN": # Request to begin synchronization
             secure_send(target, 'ACK|{}'.format(data))
             print 'ready for sync'
             new_info = secure_file_recv(target)
@@ -133,7 +135,7 @@ def do_work():
                 user = User(username)
                 flag = user.authenticate(password)
             else:
-                raise
+                raise # No reason a valid client should try to set-up a connection without authentication.
         except Exception, error:
             print 'ERROR', error
             flag = 'WTF'
