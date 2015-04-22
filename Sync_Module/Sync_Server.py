@@ -38,7 +38,7 @@ def send_files(target, folder_type, user, to_send, again = True):
     elif again:
         send_files(target, folder_type, user, to_send, False)# Try to re-do it one more time.
     else:
-        secure_send(target, 'SNF') # Informing the user that the server could not update him. Support currently unimplimented.
+        secure_send(target, 'SNF') # Informing the user that the server could not update him. Support currently unimplimented at the client side.
 
 def delete_files(target, folder_type, user, to_delete, again = True):
     secure_send(target, 'DEL')
