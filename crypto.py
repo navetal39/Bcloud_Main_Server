@@ -7,8 +7,8 @@ PADD_CHAR = '?'
 
 # Ecryption funcs: #
 def encrypt(plaintext):
-	''' Encrypts the plaintext received.
-	'''
+    ''' Encrypts the plaintext received.
+    '''
     from crypto_extended import generate_key as KEY
     padded_plaintext = padd(plaintext)
     encryptor = AES.new(KEY())
@@ -17,8 +17,8 @@ def encrypt(plaintext):
     return encoded_ciphertext
 
 def decrypt(encoded_ciphertext):
-	''' Decrypts the Base64 encoded ciphertext received.
-	'''
+    ''' Decrypts the Base64 encoded ciphertext received.
+    '''
     from crypto_extended import generate_key as KEY
     decryptor = AES.new(KEY())
     ciphertext = encoded_ciphertext.decode("Base64") #Decode from base64, the reason for encoding is written above.^
@@ -27,16 +27,16 @@ def decrypt(encoded_ciphertext):
 
 ## Utill for encryption funcs: ##
 def padd(not_padded):
-	''' Pad the plaintext before it is encrypted, so it will work with the AES block cipher.
-	'''
+    ''' Pad the plaintext before it is encrypted, so it will work with the AES block cipher.
+    '''
     padding_amount = (BLOCK_SIZE - len(not_padded) % BLOCK_SIZE)
     padding = padding_amount * PADD_CHAR
     padded = not_padded + padding
     return padded
 
 def depadd(padded):
-	''' De-pad the plaintext efter it was decrypted.
-	'''
+    ''' De-pad the plaintext efter it was decrypted.
+    '''
     depadded = padded.strip(PADD_CHAR)
     return depadded
 
