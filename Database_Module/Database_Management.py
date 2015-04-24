@@ -19,7 +19,7 @@ class DataBase(object):
         # Initial database setup - Reading the existing entries from the .txt file and converting it to a dictionary form.
         database_file = open('database.txt', 'r')
         encrypted_database_content = database_file.read()
-        encrypted_lines = encrypted_database_content.split('§§§') #The database isn't completly encrypted, but rather each of
+        encrypted_lines = encrypted_database_content.split('���') #The database isn't completly encrypted, but rather each of
                                                                   # it's lines (entries) are, and each entry is seperated
                                                                   # from it's neighbours with '§§§'
         for encrypted_line in encrypted_lines:
@@ -39,8 +39,8 @@ class DataBase(object):
         return info
     
     def __repr__(self):
-    ''' Used for debugging
-    '''
+        ''' Used for debugging
+        '''
         info = ''
         for key in self.dict_database.keys():
             info += "{name}:{pw}\n".format(name=key, pw=self.dict_database[key])
@@ -110,14 +110,15 @@ class DataBase(object):
         ''' Verifies that a given name and a given password matches in the database
         '''
         try:
-            if self.name_exists(name):
+            if self.name_exists(name) == "SCS":
                 if self.dict_database[name] == password:
                     return "SCS"
                 else:
                     return "NPW"
             else:
                 return "NNM"
-        except:
+        except Exception, e:
+            print 'ERROR',e
             return "WTF"
 
 '''

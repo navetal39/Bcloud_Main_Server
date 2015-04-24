@@ -141,9 +141,14 @@ def do_work():
             flag = 'WTF'
         finally:
             secure_send(client_socket, '{}|{}'.format(flag, authentication_info))
+            if flag != 'SCS':
+                client_socket.close()
+                do = False
+            else:
+                do = True
     
         # Requests:
-        while True:
+        while do:
             req = secure_recv(client_socket)
             if req == "":
                 client_socket.close()

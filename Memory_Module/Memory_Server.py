@@ -108,7 +108,7 @@ def respond_to_clients(target, data):
             target.send('{}|{}'.format(status, data)) # Commands that only return a status line
         print "Sent data to client"
 
-def do_work():
+def do_work(): # Both do_work and respond_to_clients are present since at the beginning this module used a diffrent approach for multi-clients support, and when changed to multi-threading we made a simple method for the threads that uses a slightly modified version of the client responding method to complete it.
     while True:
         print 'start'
         client_socket, client_addr = q.get()
