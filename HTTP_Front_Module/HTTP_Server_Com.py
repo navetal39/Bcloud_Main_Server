@@ -50,6 +50,7 @@ def do_work():
             try:
                 req = client_socket.recv(2048)
             except Exception, e:
+                print 'ERROR',e
                 if e.errno == 10054: # A forced connection close
                     req = ''
                 else:

@@ -117,6 +117,7 @@ def do_work(): # Both do_work and respond_to_clients are present since at the be
             try:
                 req = client_socket.recv(2048)
             except Exception, e:
+                print 'ERROR',e
                 if e.errno == 10054: # A forced connection close
                     req = ''
                 else:
