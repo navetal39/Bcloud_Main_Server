@@ -1,6 +1,5 @@
 # -*- coding: cp1255 -*-
 # INFO: #
-# No Encryption.
 # ===================================
 
 import socket, sys

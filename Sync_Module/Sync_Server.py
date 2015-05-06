@@ -1,5 +1,4 @@
 # Info: #
-# NOT TESTED YET
 # ===================================
 
 print 'sync'
